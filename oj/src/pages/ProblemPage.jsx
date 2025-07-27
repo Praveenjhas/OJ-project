@@ -1,7 +1,7 @@
 // src/pages/ProblemPage.jsx
 import React from "react";
-import FilterSidebar from "../src/components/problems/FilterSidebar.jsx";
-import ProblemTable from "../src/components/problems/ProblemTable.jsx";
+import FilterSidebar from "../components/problems/FilterSidebar.jsx";
+import ProblemTable from "../components/problems/ProblemTable.jsx";
 
 const ProblemPage = () => {
   return (
