@@ -28,7 +28,7 @@ An interactive and customizable online judge web application where users can pra
 ## 📁 Folder Structure
 
 ```
-oj-project/
+oj/
 ├── public/
 ├── src/
 │   ├── components/         # Navbar, FilterSidebar, ProblemTable, etc.
@@ -70,7 +70,7 @@ Coming soon...
 ## ✍️ Author
 
 **Praveen Kumar Jha**  
-B.Tech in Computer Science @ IIT Mandi  
+B.Tech  @ IIT Mandi  
 GitHub: [@Praveenjhas](https://github.com/Praveenjhas)
 
 ---
