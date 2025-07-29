@@ -1,16 +1,39 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage.jsx";
-import ProblemPage from "./pages/ProblemPage.jsx"; // Add ProblemPage
+import LoginPage from "./pages/LoginPage.jsx";
+import RegisterPage from "./pages/RegisterPage.jsx";
+import ProblemsPage from "./pages/ProblemsPage.jsx";
+import ProblemDetail from "./pages/ProblemDetail.jsx";
 
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/problems" element={<ProblemPage />} />
-      </Routes>
-    </Router>
-  );
+function PrivateRoute({ children }) {
+  const token = localStorage.getItem("token");
+  return token ? children : <Navigate to="/login" />;
 }
 
-export default App;
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route
+          path="/problems"
+          element={
+            <PrivateRoute>
+              <ProblemsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/problems/:id"
+          element={
+            <PrivateRoute>
+              <ProblemDetail />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+}

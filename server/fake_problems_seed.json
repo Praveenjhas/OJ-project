@@ -1,0 +1,1602 @@
+[
+  {
+    "title": "Sum of N Integers",
+    "description": "<p>Read an integer <code>n</code>, then n integers, and print their sum.</p>",
+    "categories": ["Math", "Implementation"],
+    "difficulty": "Easy",
+    "timeLimit": 5000,
+    "memoryLimit": 256,
+    "constraints": ["1 ≤ n ≤ 10^5", "-10^9 ≤ each integer ≤ 10^9"],
+    "sampleInputs": ["5\n1 2 3 4 5\n"],
+    "sampleOutputs": ["15\n"],
+    "testCases": [
+      { "input": "5\n1 2 3 4 5\n", "expectedOutput": "15\n" },
+      { "input": "3\n100 -50 25\n", "expectedOutput": "75\n" },
+      { "input": "1\n0\n", "expectedOutput": "0\n" }
+    ]
+  },
+  {
+    "title": "Pi eta beta xi sigma epsilon.",
+    "description": "Phi pi kappa pi phi psi delta tau epsilon beta kappa kappa tau theta upsilon.",
+    "categories": ["Stacks", "Graphs", "HashMap"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "65 92",
+        "expectedOutput": "157"
+      },
+      {
+        "input": "49 21",
+        "expectedOutput": "70"
+      }
+    ]
+  },
+  {
+    "title": "Phi lambda zeta xi.",
+    "description": "Iota omicron omicron chi iota chi omega mu psi kappa iota omega.",
+    "categories": ["Arrays"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "9 41",
+        "expectedOutput": "50"
+      },
+      {
+        "input": "9 28",
+        "expectedOutput": "37"
+      }
+    ]
+  },
+  {
+    "title": "Mu eta nu lambda chi delta.",
+    "description": "Mu zeta pi kappa gamma phi omega kappa mu xi sigma tau zeta phi tau epsilon pi sigma zeta rho.",
+    "categories": ["Sliding Window"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "24 93",
+        "expectedOutput": "117"
+      },
+      {
+        "input": "34 50",
+        "expectedOutput": "84"
+      }
+    ]
+  },
+  {
+    "title": "Xi delta eta mu kappa.",
+    "description": "Sigma nu tau eta rho phi xi theta delta psi chi phi zeta beta epsilon sigma gamma kappa omega theta.",
+    "categories": ["Stacks"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "84 47",
+        "expectedOutput": "131"
+      },
+      {
+        "input": "31 87",
+        "expectedOutput": "118"
+      }
+    ]
+  },
+  {
+    "title": "Zeta psi alpha epsilon eta gamma.",
+    "description": "Pi mu omega eta mu upsilon nu mu nu xi theta omega delta tau beta nu nu sigma phi kappa.",
+    "categories": ["Math", "Recursion", "Queues"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "55 54",
+        "expectedOutput": "109"
+      },
+      {
+        "input": "75 68",
+        "expectedOutput": "143"
+      }
+    ]
+  },
+  {
+    "title": "Beta pi eta.",
+    "description": "Omicron zeta kappa lambda beta chi sigma epsilon eta beta epsilon pi xi gamma theta mu.",
+    "categories": ["DP", "Strings", "Math"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "70 29",
+        "expectedOutput": "99"
+      },
+      {
+        "input": "43 38",
+        "expectedOutput": "81"
+      }
+    ]
+  },
+  {
+    "title": "Eta zeta omega delta tau sigma.",
+    "description": "Omega phi upsilon pi xi chi delta beta beta beta omega upsilon omega omega lambda gamma phi beta upsilon phi.",
+    "categories": ["Trees"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "11 19",
+        "expectedOutput": "30"
+      },
+      {
+        "input": "98 50",
+        "expectedOutput": "148"
+      }
+    ]
+  },
+  {
+    "title": "Pi nu epsilon gamma.",
+    "description": "Iota delta phi xi alpha beta psi chi lambda omicron zeta chi iota omega nu lambda kappa tau beta phi.",
+    "categories": ["Arrays"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "31 39",
+        "expectedOutput": "70"
+      },
+      {
+        "input": "90 51",
+        "expectedOutput": "141"
+      }
+    ]
+  },
+  {
+    "title": "Mu omega xi.",
+    "description": "Psi mu beta alpha epsilon eta omega mu xi psi psi iota omicron iota pi lambda delta.",
+    "categories": ["Graphs"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "49 41",
+        "expectedOutput": "90"
+      },
+      {
+        "input": "27 49",
+        "expectedOutput": "76"
+      }
+    ]
+  },
+  {
+    "title": "Delta lambda omega sigma psi sigma.",
+    "description": "Delta eta omega omega chi kappa phi theta mu omicron theta tau.",
+    "categories": ["Sliding Window", "Linked List", "HashMap"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "57 28",
+        "expectedOutput": "85"
+      },
+      {
+        "input": "36 73",
+        "expectedOutput": "109"
+      }
+    ]
+  },
+  {
+    "title": "Beta phi omicron epsilon.",
+    "description": "Omega pi alpha delta upsilon gamma kappa theta omega mu nu gamma upsilon tau.",
+    "categories": ["Sliding Window"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "23 2",
+        "expectedOutput": "25"
+      },
+      {
+        "input": "45 32",
+        "expectedOutput": "77"
+      }
+    ]
+  },
+  {
+    "title": "Mu eta beta alpha zeta phi.",
+    "description": "Psi tau chi tau psi chi gamma lambda gamma gamma alpha nu zeta rho nu eta lambda psi kappa.",
+    "categories": ["Sliding Window"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "39 33",
+        "expectedOutput": "72"
+      },
+      {
+        "input": "13 80",
+        "expectedOutput": "93"
+      }
+    ]
+  },
+  {
+    "title": "Delta zeta pi eta.",
+    "description": "Pi sigma beta zeta zeta xi kappa theta theta zeta upsilon lambda tau xi chi delta.",
+    "categories": ["Trees"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "52 48",
+        "expectedOutput": "100"
+      },
+      {
+        "input": "79 3",
+        "expectedOutput": "82"
+      }
+    ]
+  },
+  {
+    "title": "Mu sigma beta.",
+    "description": "Omega phi lambda gamma omega iota upsilon kappa epsilon gamma mu upsilon phi rho tau psi delta kappa iota rho.",
+    "categories": ["Two Pointers", "Queues", "Recursion"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "80 12",
+        "expectedOutput": "92"
+      },
+      {
+        "input": "14 95",
+        "expectedOutput": "109"
+      }
+    ]
+  },
+  {
+    "title": "Chi sigma iota.",
+    "description": "Sigma xi sigma lambda sigma delta mu upsilon zeta nu chi eta delta.",
+    "categories": ["DP"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "21 63",
+        "expectedOutput": "84"
+      },
+      {
+        "input": "52 70",
+        "expectedOutput": "122"
+      }
+    ]
+  },
+  {
+    "title": "Tau mu omicron.",
+    "description": "Gamma epsilon alpha zeta theta eta rho eta omicron sigma theta sigma omicron omega pi.",
+    "categories": ["Binary Search", "DP"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "60 72",
+        "expectedOutput": "132"
+      },
+      {
+        "input": "52 25",
+        "expectedOutput": "77"
+      }
+    ]
+  },
+  {
+    "title": "Tau kappa chi rho nu.",
+    "description": "Psi alpha beta zeta lambda iota psi omega zeta sigma omega epsilon pi.",
+    "categories": ["Greedy", "Trees"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "79 4",
+        "expectedOutput": "83"
+      },
+      {
+        "input": "33 81",
+        "expectedOutput": "114"
+      }
+    ]
+  },
+  {
+    "title": "Rho kappa epsilon gamma.",
+    "description": "Kappa psi phi mu rho zeta psi lambda psi iota zeta beta delta iota nu omicron.",
+    "categories": ["Arrays"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "13 14",
+        "expectedOutput": "27"
+      },
+      {
+        "input": "13 29",
+        "expectedOutput": "42"
+      }
+    ]
+  },
+  {
+    "title": "Rho eta mu.",
+    "description": "Pi delta sigma xi pi omega zeta epsilon xi pi nu gamma epsilon omicron.",
+    "categories": ["Two Pointers", "DP", "Stacks"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "31 14",
+        "expectedOutput": "45"
+      },
+      {
+        "input": "10 29",
+        "expectedOutput": "39"
+      }
+    ]
+  },
+  {
+    "title": "Xi gamma kappa kappa omega.",
+    "description": "Chi epsilon theta xi upsilon zeta phi xi eta kappa kappa iota epsilon nu pi tau.",
+    "categories": ["Math", "Arrays", "Greedy"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "17 1",
+        "expectedOutput": "18"
+      },
+      {
+        "input": "20 81",
+        "expectedOutput": "101"
+      }
+    ]
+  },
+  {
+    "title": "Zeta pi delta upsilon iota.",
+    "description": "Delta iota iota iota psi epsilon delta kappa zeta omega delta omicron epsilon upsilon kappa sigma pi.",
+    "categories": ["Linked List", "Queues", "Strings"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "6 92",
+        "expectedOutput": "98"
+      },
+      {
+        "input": "25 52",
+        "expectedOutput": "77"
+      }
+    ]
+  },
+  {
+    "title": "Xi phi sigma omicron.",
+    "description": "Omicron pi omega nu omicron beta xi rho iota phi zeta eta delta pi omicron theta chi tau tau omega.",
+    "categories": ["Binary Search", "Greedy", "Graphs"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "25 50",
+        "expectedOutput": "75"
+      },
+      {
+        "input": "77 35",
+        "expectedOutput": "112"
+      }
+    ]
+  },
+  {
+    "title": "Sigma omega xi upsilon upsilon kappa.",
+    "description": "Iota phi iota phi theta mu psi chi pi alpha zeta psi theta rho lambda chi.",
+    "categories": ["Strings", "Binary Search", "HashMap"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "19 59",
+        "expectedOutput": "78"
+      },
+      {
+        "input": "66 81",
+        "expectedOutput": "147"
+      }
+    ]
+  },
+  {
+    "title": "Upsilon iota alpha lambda kappa phi.",
+    "description": "Upsilon xi kappa mu upsilon psi rho zeta pi beta xi theta epsilon epsilon xi.",
+    "categories": ["Recursion", "HashMap"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "18 92",
+        "expectedOutput": "110"
+      },
+      {
+        "input": "82 62",
+        "expectedOutput": "144"
+      }
+    ]
+  },
+  {
+    "title": "Delta theta zeta delta mu.",
+    "description": "Sigma gamma omega pi gamma kappa delta omega omega xi eta zeta xi beta alpha upsilon.",
+    "categories": ["Strings", "Queues", "Graphs"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "23 91",
+        "expectedOutput": "114"
+      },
+      {
+        "input": "21 11",
+        "expectedOutput": "32"
+      }
+    ]
+  },
+  {
+    "title": "Upsilon upsilon omicron beta xi.",
+    "description": "Mu beta omicron iota iota zeta theta pi xi kappa iota omega omega epsilon.",
+    "categories": ["DP", "Linked List"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "63 77",
+        "expectedOutput": "140"
+      },
+      {
+        "input": "84 40",
+        "expectedOutput": "124"
+      }
+    ]
+  },
+  {
+    "title": "Pi gamma alpha phi upsilon psi.",
+    "description": "Pi tau gamma alpha kappa theta xi upsilon chi sigma mu lambda nu upsilon zeta psi phi.",
+    "categories": ["Recursion", "Stacks"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "93 78",
+        "expectedOutput": "171"
+      },
+      {
+        "input": "41 53",
+        "expectedOutput": "94"
+      }
+    ]
+  },
+  {
+    "title": "Gamma mu psi rho.",
+    "description": "Tau iota rho kappa psi pi delta rho kappa epsilon mu chi omega mu.",
+    "categories": ["Trees"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "60 10",
+        "expectedOutput": "70"
+      },
+      {
+        "input": "68 25",
+        "expectedOutput": "93"
+      }
+    ]
+  },
+  {
+    "title": "Gamma omicron delta nu gamma.",
+    "description": "Theta phi rho psi tau iota phi tau pi phi lambda omicron.",
+    "categories": ["Binary Search", "HashMap", "Recursion"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "77 69",
+        "expectedOutput": "146"
+      },
+      {
+        "input": "58 88",
+        "expectedOutput": "146"
+      }
+    ]
+  },
+  {
+    "title": "Omicron epsilon beta xi chi.",
+    "description": "Chi lambda gamma sigma xi psi beta mu mu iota epsilon iota pi lambda nu sigma zeta nu.",
+    "categories": ["Sliding Window", "Strings", "Two Pointers"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "98 83",
+        "expectedOutput": "181"
+      },
+      {
+        "input": "84 45",
+        "expectedOutput": "129"
+      }
+    ]
+  },
+  {
+    "title": "Kappa alpha omega gamma.",
+    "description": "Zeta lambda alpha psi omega alpha eta chi upsilon alpha pi psi chi gamma chi beta omega sigma beta.",
+    "categories": ["HashMap", "DP"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "39 28",
+        "expectedOutput": "67"
+      },
+      {
+        "input": "91 29",
+        "expectedOutput": "120"
+      }
+    ]
+  },
+  {
+    "title": "Xi alpha upsilon.",
+    "description": "Omicron omega omicron omega eta nu mu sigma eta gamma xi mu.",
+    "categories": ["Linked List", "Trees", "HashMap"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "12 40",
+        "expectedOutput": "52"
+      },
+      {
+        "input": "39 4",
+        "expectedOutput": "43"
+      }
+    ]
+  },
+  {
+    "title": "Rho omega psi psi zeta chi.",
+    "description": "Tau epsilon sigma zeta omicron rho epsilon omega tau theta pi chi chi.",
+    "categories": ["Binary Search"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "59 4",
+        "expectedOutput": "63"
+      },
+      {
+        "input": "37 79",
+        "expectedOutput": "116"
+      }
+    ]
+  },
+  {
+    "title": "Omega gamma rho omicron lambda zeta.",
+    "description": "Epsilon zeta tau alpha mu upsilon kappa xi alpha beta phi beta pi beta phi sigma delta epsilon epsilon kappa.",
+    "categories": ["Recursion", "Trees"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "1 38",
+        "expectedOutput": "39"
+      },
+      {
+        "input": "37 9",
+        "expectedOutput": "46"
+      }
+    ]
+  },
+  {
+    "title": "Nu theta upsilon iota.",
+    "description": "Epsilon alpha xi sigma upsilon kappa eta pi eta epsilon rho alpha omicron beta lambda omega.",
+    "categories": ["Linked List"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "97 70",
+        "expectedOutput": "167"
+      },
+      {
+        "input": "80 15",
+        "expectedOutput": "95"
+      }
+    ]
+  },
+  {
+    "title": "Nu sigma sigma.",
+    "description": "Alpha kappa theta theta chi rho beta zeta pi rho beta iota theta xi xi zeta iota omega phi.",
+    "categories": ["Queues", "HashMap"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "29 29",
+        "expectedOutput": "58"
+      },
+      {
+        "input": "50 89",
+        "expectedOutput": "139"
+      }
+    ]
+  },
+  {
+    "title": "Upsilon tau mu.",
+    "description": "Tau kappa nu pi chi nu alpha kappa rho mu sigma delta tau upsilon kappa mu chi iota rho.",
+    "categories": ["Greedy", "Queues", "Graphs"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "59 79",
+        "expectedOutput": "138"
+      },
+      {
+        "input": "29 51",
+        "expectedOutput": "80"
+      }
+    ]
+  },
+  {
+    "title": "Xi sigma alpha rho.",
+    "description": "Upsilon omega xi pi gamma epsilon epsilon nu chi kappa pi alpha delta tau zeta.",
+    "categories": ["Two Pointers"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "26 1",
+        "expectedOutput": "27"
+      },
+      {
+        "input": "36 5",
+        "expectedOutput": "41"
+      }
+    ]
+  },
+  {
+    "title": "Kappa epsilon omicron omega zeta.",
+    "description": "Phi pi pi psi mu gamma psi omicron epsilon xi theta lambda tau.",
+    "categories": ["Stacks", "Sliding Window", "Recursion"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "39 2",
+        "expectedOutput": "41"
+      },
+      {
+        "input": "96 72",
+        "expectedOutput": "168"
+      }
+    ]
+  },
+  {
+    "title": "Phi rho beta omicron omega delta.",
+    "description": "Phi iota psi alpha nu epsilon rho chi nu iota lambda xi eta mu iota tau alpha.",
+    "categories": ["Arrays", "Two Pointers", "HashMap"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "8 57",
+        "expectedOutput": "65"
+      },
+      {
+        "input": "87 91",
+        "expectedOutput": "178"
+      }
+    ]
+  },
+  {
+    "title": "Kappa iota phi.",
+    "description": "Rho epsilon omega sigma omega lambda zeta eta lambda pi kappa theta omega zeta theta upsilon omega.",
+    "categories": ["HashMap"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "79 48",
+        "expectedOutput": "127"
+      },
+      {
+        "input": "22 61",
+        "expectedOutput": "83"
+      }
+    ]
+  },
+  {
+    "title": "Lambda theta tau omicron theta upsilon.",
+    "description": "Eta tau alpha tau theta beta theta delta kappa phi iota mu alpha rho beta upsilon.",
+    "categories": ["Linked List", "Stacks", "Math"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "47 8",
+        "expectedOutput": "55"
+      },
+      {
+        "input": "16 44",
+        "expectedOutput": "60"
+      }
+    ]
+  },
+  {
+    "title": "Sigma beta zeta omega omicron.",
+    "description": "Pi tau delta lambda tau gamma iota gamma chi chi phi xi gamma phi lambda zeta phi.",
+    "categories": ["Arrays"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "51 29",
+        "expectedOutput": "80"
+      },
+      {
+        "input": "79 87",
+        "expectedOutput": "166"
+      }
+    ]
+  },
+  {
+    "title": "Sigma delta nu iota.",
+    "description": "Kappa omicron xi rho tau theta zeta tau chi pi mu iota.",
+    "categories": ["Two Pointers", "Binary Search", "Math"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "33 91",
+        "expectedOutput": "124"
+      },
+      {
+        "input": "97 69",
+        "expectedOutput": "166"
+      }
+    ]
+  },
+  {
+    "title": "Iota delta epsilon.",
+    "description": "Kappa pi beta delta theta iota rho delta epsilon epsilon epsilon theta pi gamma.",
+    "categories": ["Greedy", "Stacks"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "43 40",
+        "expectedOutput": "83"
+      },
+      {
+        "input": "84 17",
+        "expectedOutput": "101"
+      }
+    ]
+  },
+  {
+    "title": "Nu omicron zeta upsilon.",
+    "description": "Sigma chi tau tau gamma psi kappa psi epsilon tau pi eta upsilon nu psi zeta gamma phi tau nu.",
+    "categories": ["Stacks", "Two Pointers", "Linked List"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "50 13",
+        "expectedOutput": "63"
+      },
+      {
+        "input": "60 9",
+        "expectedOutput": "69"
+      }
+    ]
+  },
+  {
+    "title": "Lambda gamma upsilon lambda.",
+    "description": "Upsilon omega theta lambda omicron sigma theta omega psi tau sigma delta beta omega xi omicron mu alpha.",
+    "categories": ["Trees"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "63 35",
+        "expectedOutput": "98"
+      },
+      {
+        "input": "87 85",
+        "expectedOutput": "172"
+      }
+    ]
+  },
+  {
+    "title": "Zeta theta rho.",
+    "description": "Kappa psi psi kappa kappa omicron nu epsilon sigma gamma mu upsilon chi theta psi epsilon delta omega tau.",
+    "categories": ["Trees"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "22 91",
+        "expectedOutput": "113"
+      },
+      {
+        "input": "100 45",
+        "expectedOutput": "145"
+      }
+    ]
+  },
+  {
+    "title": "Zeta epsilon rho beta.",
+    "description": "Chi rho gamma upsilon epsilon theta nu delta delta nu sigma tau iota delta gamma zeta.",
+    "categories": ["Greedy"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "21 68",
+        "expectedOutput": "89"
+      },
+      {
+        "input": "63 34",
+        "expectedOutput": "97"
+      }
+    ]
+  },
+  {
+    "title": "Theta omega zeta sigma delta.",
+    "description": "Sigma chi phi iota pi zeta eta nu pi zeta chi psi beta zeta.",
+    "categories": ["Trees"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "76 46",
+        "expectedOutput": "122"
+      },
+      {
+        "input": "12 18",
+        "expectedOutput": "30"
+      }
+    ]
+  },
+  {
+    "title": "Sigma chi nu gamma.",
+    "description": "Epsilon delta nu xi beta rho theta nu omega xi zeta epsilon omega delta mu upsilon.",
+    "categories": ["Queues", "Linked List", "Greedy"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "16 49",
+        "expectedOutput": "65"
+      },
+      {
+        "input": "18 25",
+        "expectedOutput": "43"
+      }
+    ]
+  },
+  {
+    "title": "Kappa pi beta upsilon chi.",
+    "description": "Theta rho phi omega theta chi sigma pi beta psi gamma omicron epsilon rho tau alpha iota delta alpha zeta.",
+    "categories": ["HashMap", "Binary Search", "Greedy"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "2 21",
+        "expectedOutput": "23"
+      },
+      {
+        "input": "26 62",
+        "expectedOutput": "88"
+      }
+    ]
+  },
+  {
+    "title": "Nu pi tau omega rho.",
+    "description": "Delta omega nu xi upsilon mu upsilon omega iota psi eta epsilon sigma psi epsilon pi.",
+    "categories": ["Trees"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "97 93",
+        "expectedOutput": "190"
+      },
+      {
+        "input": "88 100",
+        "expectedOutput": "188"
+      }
+    ]
+  },
+  {
+    "title": "Xi gamma iota alpha psi.",
+    "description": "Theta eta epsilon omega zeta alpha omega gamma epsilon tau mu rho gamma rho theta lambda gamma iota eta.",
+    "categories": ["Linked List", "Greedy"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "6 69",
+        "expectedOutput": "75"
+      },
+      {
+        "input": "79 92",
+        "expectedOutput": "171"
+      }
+    ]
+  },
+  {
+    "title": "Iota epsilon epsilon pi sigma kappa.",
+    "description": "Epsilon mu zeta omicron upsilon phi phi xi beta pi omicron tau omicron.",
+    "categories": ["Sliding Window"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "46 52",
+        "expectedOutput": "98"
+      },
+      {
+        "input": "44 65",
+        "expectedOutput": "109"
+      }
+    ]
+  },
+  {
+    "title": "Omicron omicron xi omega.",
+    "description": "Lambda pi rho omicron theta kappa psi phi alpha alpha gamma mu gamma delta.",
+    "categories": ["Sliding Window", "Graphs", "Trees"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "87 1",
+        "expectedOutput": "88"
+      },
+      {
+        "input": "92 53",
+        "expectedOutput": "145"
+      }
+    ]
+  },
+  {
+    "title": "Sigma delta kappa.",
+    "description": "Tau psi kappa delta beta lambda xi iota rho chi sigma psi mu mu nu pi upsilon chi xi.",
+    "categories": ["Recursion", "Trees"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "57 2",
+        "expectedOutput": "59"
+      },
+      {
+        "input": "51 26",
+        "expectedOutput": "77"
+      }
+    ]
+  },
+  {
+    "title": "Mu omicron iota iota pi delta.",
+    "description": "Omega phi gamma theta omega eta omega omicron sigma kappa iota pi rho kappa omicron.",
+    "categories": ["HashMap", "Two Pointers", "Queues"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "63 53",
+        "expectedOutput": "116"
+      },
+      {
+        "input": "42 49",
+        "expectedOutput": "91"
+      }
+    ]
+  },
+  {
+    "title": "Sigma beta phi lambda beta.",
+    "description": "Gamma lambda chi beta chi chi omega kappa alpha psi lambda omicron gamma sigma zeta zeta tau psi epsilon.",
+    "categories": ["Recursion"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "79 51",
+        "expectedOutput": "130"
+      },
+      {
+        "input": "43 22",
+        "expectedOutput": "65"
+      }
+    ]
+  },
+  {
+    "title": "Rho gamma theta tau omega iota.",
+    "description": "Lambda nu omega alpha phi omega iota psi omicron chi nu rho omicron kappa beta omicron xi chi chi alpha.",
+    "categories": ["Greedy", "Recursion", "Binary Search"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "74 15",
+        "expectedOutput": "89"
+      },
+      {
+        "input": "63 64",
+        "expectedOutput": "127"
+      }
+    ]
+  },
+  {
+    "title": "Gamma kappa gamma.",
+    "description": "Mu alpha rho upsilon zeta tau mu sigma mu delta phi mu iota.",
+    "categories": ["Stacks", "Math"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "57 44",
+        "expectedOutput": "101"
+      },
+      {
+        "input": "23 68",
+        "expectedOutput": "91"
+      }
+    ]
+  },
+  {
+    "title": "Xi zeta delta.",
+    "description": "Lambda psi xi pi rho omega psi alpha nu chi nu omega.",
+    "categories": ["Graphs"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "60 43",
+        "expectedOutput": "103"
+      },
+      {
+        "input": "18 62",
+        "expectedOutput": "80"
+      }
+    ]
+  },
+  {
+    "title": "Lambda epsilon phi.",
+    "description": "Alpha zeta kappa phi beta iota delta omicron alpha psi eta zeta sigma epsilon chi phi kappa.",
+    "categories": ["DP", "Trees"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "75 98",
+        "expectedOutput": "173"
+      },
+      {
+        "input": "33 99",
+        "expectedOutput": "132"
+      }
+    ]
+  },
+  {
+    "title": "Upsilon mu psi lambda pi xi.",
+    "description": "Omicron theta epsilon beta upsilon tau eta phi upsilon omega chi kappa zeta.",
+    "categories": ["HashMap"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "16 25",
+        "expectedOutput": "41"
+      },
+      {
+        "input": "35 10",
+        "expectedOutput": "45"
+      }
+    ]
+  },
+  {
+    "title": "Alpha epsilon omega beta nu phi.",
+    "description": "Pi chi rho lambda alpha omicron nu xi gamma epsilon rho xi rho lambda eta eta omicron upsilon.",
+    "categories": ["Two Pointers"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "65 70",
+        "expectedOutput": "135"
+      },
+      {
+        "input": "71 25",
+        "expectedOutput": "96"
+      }
+    ]
+  },
+  {
+    "title": "Beta epsilon beta kappa gamma.",
+    "description": "Upsilon zeta pi eta rho psi rho mu epsilon kappa lambda eta delta omicron sigma nu.",
+    "categories": ["Queues"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "98 48",
+        "expectedOutput": "146"
+      },
+      {
+        "input": "39 3",
+        "expectedOutput": "42"
+      }
+    ]
+  },
+  {
+    "title": "Omega omicron omicron omicron pi kappa.",
+    "description": "Chi pi omega omicron beta zeta gamma lambda pi pi tau alpha nu.",
+    "categories": ["Sliding Window", "Trees", "Stacks"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "31 48",
+        "expectedOutput": "79"
+      },
+      {
+        "input": "79 26",
+        "expectedOutput": "105"
+      }
+    ]
+  },
+  {
+    "title": "Omega xi beta beta psi.",
+    "description": "Alpha delta eta tau pi alpha pi chi pi mu epsilon mu iota phi omicron omicron theta.",
+    "categories": ["Sliding Window", "Queues"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "8 94",
+        "expectedOutput": "102"
+      },
+      {
+        "input": "11 96",
+        "expectedOutput": "107"
+      }
+    ]
+  },
+  {
+    "title": "Sigma theta nu theta psi chi.",
+    "description": "Rho pi rho chi chi xi iota omicron phi gamma beta tau beta tau beta psi.",
+    "categories": ["Math"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "64 53",
+        "expectedOutput": "117"
+      },
+      {
+        "input": "41 30",
+        "expectedOutput": "71"
+      }
+    ]
+  },
+  {
+    "title": "Nu tau beta kappa xi.",
+    "description": "Upsilon mu beta alpha gamma tau kappa eta kappa theta theta upsilon nu pi epsilon iota theta sigma zeta nu.",
+    "categories": ["Strings"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "83 88",
+        "expectedOutput": "171"
+      },
+      {
+        "input": "95 16",
+        "expectedOutput": "111"
+      }
+    ]
+  },
+  {
+    "title": "Psi phi omega.",
+    "description": "Pi nu pi tau iota eta alpha iota mu omega pi gamma iota lambda omega gamma epsilon upsilon gamma mu.",
+    "categories": ["Recursion", "Strings", "Two Pointers"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "52 27",
+        "expectedOutput": "79"
+      },
+      {
+        "input": "90 52",
+        "expectedOutput": "142"
+      }
+    ]
+  },
+  {
+    "title": "Iota iota delta.",
+    "description": "Chi epsilon lambda zeta mu alpha theta mu tau nu theta pi.",
+    "categories": ["Math", "Greedy"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "88 44",
+        "expectedOutput": "132"
+      },
+      {
+        "input": "19 74",
+        "expectedOutput": "93"
+      }
+    ]
+  },
+  {
+    "title": "Omega delta epsilon psi.",
+    "description": "Eta zeta eta kappa tau mu epsilon mu theta rho tau rho gamma mu pi omicron kappa.",
+    "categories": ["Binary Search"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "83 94",
+        "expectedOutput": "177"
+      },
+      {
+        "input": "95 36",
+        "expectedOutput": "131"
+      }
+    ]
+  },
+  {
+    "title": "Tau nu nu gamma.",
+    "description": "Eta theta delta kappa epsilon xi rho theta omega theta eta theta phi.",
+    "categories": ["Two Pointers", "Arrays", "Greedy"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "20 53",
+        "expectedOutput": "73"
+      },
+      {
+        "input": "69 65",
+        "expectedOutput": "134"
+      }
+    ]
+  },
+  {
+    "title": "Sigma nu phi iota omicron zeta.",
+    "description": "Zeta pi beta nu iota psi chi zeta sigma alpha alpha theta iota lambda.",
+    "categories": ["Graphs", "Linked List"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "55 29",
+        "expectedOutput": "84"
+      },
+      {
+        "input": "70 85",
+        "expectedOutput": "155"
+      }
+    ]
+  },
+  {
+    "title": "Beta beta phi xi gamma delta.",
+    "description": "Gamma omega epsilon beta zeta omega theta delta omicron epsilon phi zeta.",
+    "categories": ["Greedy", "Stacks", "Trees"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "82 56",
+        "expectedOutput": "138"
+      },
+      {
+        "input": "76 18",
+        "expectedOutput": "94"
+      }
+    ]
+  },
+  {
+    "title": "Psi omicron mu xi omicron.",
+    "description": "Gamma sigma pi epsilon beta upsilon chi epsilon rho omega theta sigma upsilon zeta eta sigma kappa xi psi.",
+    "categories": ["Trees"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "78 92",
+        "expectedOutput": "170"
+      },
+      {
+        "input": "91 73",
+        "expectedOutput": "164"
+      }
+    ]
+  },
+  {
+    "title": "Epsilon theta kappa.",
+    "description": "Mu lambda lambda eta xi sigma pi pi gamma pi delta lambda.",
+    "categories": ["Recursion", "Linked List"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "10 78",
+        "expectedOutput": "88"
+      },
+      {
+        "input": "22 53",
+        "expectedOutput": "75"
+      }
+    ]
+  },
+  {
+    "title": "Gamma upsilon zeta.",
+    "description": "Rho zeta rho omicron theta omega xi mu psi theta sigma rho nu delta lambda omega psi delta gamma nu.",
+    "categories": ["Graphs", "Greedy", "Arrays"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "93 94",
+        "expectedOutput": "187"
+      },
+      {
+        "input": "6 99",
+        "expectedOutput": "105"
+      }
+    ]
+  },
+  {
+    "title": "Omega pi nu iota.",
+    "description": "Omega gamma tau beta mu pi tau kappa lambda lambda sigma mu beta pi pi omega chi tau.",
+    "categories": ["Stacks", "Linked List", "Strings"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "7 11",
+        "expectedOutput": "18"
+      },
+      {
+        "input": "36 46",
+        "expectedOutput": "82"
+      }
+    ]
+  },
+  {
+    "title": "Zeta omega kappa theta.",
+    "description": "Sigma theta xi pi mu rho nu theta tau alpha phi tau gamma omega omicron chi.",
+    "categories": ["Sliding Window", "Stacks", "Recursion"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "71 50",
+        "expectedOutput": "121"
+      },
+      {
+        "input": "51 42",
+        "expectedOutput": "93"
+      }
+    ]
+  },
+  {
+    "title": "Beta nu chi delta tau tau.",
+    "description": "Zeta xi kappa eta xi epsilon kappa upsilon rho lambda psi omega rho phi.",
+    "categories": ["Math"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "11 96",
+        "expectedOutput": "107"
+      },
+      {
+        "input": "68 85",
+        "expectedOutput": "153"
+      }
+    ]
+  },
+  {
+    "title": "Xi xi mu xi lambda.",
+    "description": "Pi omega iota iota rho beta omega rho chi omega pi nu kappa zeta rho nu mu.",
+    "categories": ["Greedy", "DP"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "42 31",
+        "expectedOutput": "73"
+      },
+      {
+        "input": "36 35",
+        "expectedOutput": "71"
+      }
+    ]
+  },
+  {
+    "title": "Omicron omega kappa mu chi zeta.",
+    "description": "Xi epsilon omicron gamma omicron zeta eta eta sigma epsilon lambda upsilon theta upsilon phi theta sigma pi.",
+    "categories": ["Binary Search", "Sliding Window"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "6 74",
+        "expectedOutput": "80"
+      },
+      {
+        "input": "15 100",
+        "expectedOutput": "115"
+      }
+    ]
+  },
+  {
+    "title": "Sigma phi nu omicron omega.",
+    "description": "Gamma tau lambda zeta iota rho iota sigma gamma xi gamma omicron xi tau.",
+    "categories": ["Trees", "Arrays"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "39 55",
+        "expectedOutput": "94"
+      },
+      {
+        "input": "71 98",
+        "expectedOutput": "169"
+      }
+    ]
+  },
+  {
+    "title": "Kappa upsilon mu.",
+    "description": "Eta phi omega gamma sigma mu beta alpha lambda upsilon phi lambda omega omicron.",
+    "categories": ["Stacks"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "44 66",
+        "expectedOutput": "110"
+      },
+      {
+        "input": "74 86",
+        "expectedOutput": "160"
+      }
+    ]
+  },
+  {
+    "title": "Zeta xi psi theta rho.",
+    "description": "Eta delta zeta xi gamma kappa beta chi delta psi mu pi.",
+    "categories": ["Recursion", "Binary Search"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "11 7",
+        "expectedOutput": "18"
+      },
+      {
+        "input": "45 21",
+        "expectedOutput": "66"
+      }
+    ]
+  },
+  {
+    "title": "Psi chi theta theta.",
+    "description": "Chi omicron omicron beta beta nu eta beta phi lambda theta theta tau epsilon upsilon lambda xi pi pi.",
+    "categories": ["HashMap"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "95 28",
+        "expectedOutput": "123"
+      },
+      {
+        "input": "69 71",
+        "expectedOutput": "140"
+      }
+    ]
+  },
+  {
+    "title": "Sigma alpha gamma pi upsilon zeta.",
+    "description": "Iota upsilon pi tau theta theta eta tau xi theta mu pi.",
+    "categories": ["Recursion", "HashMap", "Linked List"],
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "38 27",
+        "expectedOutput": "65"
+      },
+      {
+        "input": "12 28",
+        "expectedOutput": "40"
+      }
+    ]
+  },
+  {
+    "title": "Nu upsilon omega.",
+    "description": "Beta lambda phi omicron upsilon zeta epsilon phi iota rho epsilon upsilon.",
+    "categories": ["Trees", "Binary Search", "Strings"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "73 49",
+        "expectedOutput": "122"
+      },
+      {
+        "input": "2 35",
+        "expectedOutput": "37"
+      }
+    ]
+  },
+  {
+    "title": "Tau iota lambda xi delta.",
+    "description": "Iota omega omega nu rho chi nu chi theta omicron tau rho tau chi phi omega gamma kappa.",
+    "categories": ["Two Pointers", "Queues"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "18 71",
+        "expectedOutput": "89"
+      },
+      {
+        "input": "71 37",
+        "expectedOutput": "108"
+      }
+    ]
+  },
+  {
+    "title": "Phi omicron xi sigma omicron.",
+    "description": "Gamma mu delta beta omicron rho tau psi kappa upsilon epsilon omega.",
+    "categories": ["Recursion"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "70 75",
+        "expectedOutput": "145"
+      },
+      {
+        "input": "94 50",
+        "expectedOutput": "144"
+      }
+    ]
+  },
+  {
+    "title": "Rho iota delta eta.",
+    "description": "Zeta alpha nu xi delta mu nu omicron zeta psi epsilon beta omega phi lambda theta xi alpha.",
+    "categories": ["HashMap"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "98 81",
+        "expectedOutput": "179"
+      },
+      {
+        "input": "6 5",
+        "expectedOutput": "11"
+      }
+    ]
+  },
+  {
+    "title": "Psi omega psi phi rho upsilon.",
+    "description": "Chi zeta kappa theta omega kappa tau gamma xi omicron psi sigma psi chi epsilon psi omicron kappa mu.",
+    "categories": ["Math", "Recursion"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "35 45",
+        "expectedOutput": "80"
+      },
+      {
+        "input": "72 34",
+        "expectedOutput": "106"
+      }
+    ]
+  },
+  {
+    "title": "Delta zeta upsilon sigma beta.",
+    "description": "Mu gamma eta upsilon beta lambda iota eta pi psi zeta kappa kappa iota.",
+    "categories": ["Sliding Window", "DP"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "12 53",
+        "expectedOutput": "65"
+      },
+      {
+        "input": "7 45",
+        "expectedOutput": "52"
+      }
+    ]
+  },
+  {
+    "title": "Xi epsilon gamma.",
+    "description": "Eta epsilon lambda eta omega omicron omicron delta alpha kappa lambda phi omega xi iota theta omega.",
+    "categories": ["HashMap"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "16 29",
+        "expectedOutput": "45"
+      },
+      {
+        "input": "1 86",
+        "expectedOutput": "87"
+      }
+    ]
+  },
+  {
+    "title": "Sigma theta delta delta eta chi.",
+    "description": "Psi zeta mu pi omicron xi upsilon chi lambda pi beta omicron lambda omicron theta chi.",
+    "categories": ["Two Pointers"],
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "60 22",
+        "expectedOutput": "82"
+      },
+      {
+        "input": "86 93",
+        "expectedOutput": "179"
+      }
+    ]
+  },
+  {
+    "title": "Kappa kappa theta chi lambda.",
+    "description": "Delta alpha rho theta eta xi alpha mu gamma iota upsilon psi.",
+    "categories": ["Strings", "Arrays", "Math"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "35 39",
+        "expectedOutput": "74"
+      },
+      {
+        "input": "89 10",
+        "expectedOutput": "99"
+      }
+    ]
+  },
+  {
+    "title": "Kappa nu chi eta.",
+    "description": "Psi chi zeta mu gamma delta mu lambda beta alpha alpha pi sigma xi mu.",
+    "categories": ["Linked List"],
+    "difficulty": "Hard",
+    "testCases": [
+      {
+        "input": "11 69",
+        "expectedOutput": "80"
+      },
+      {
+        "input": "4 29",
+        "expectedOutput": "33"
+      }
+    ]
+  }
+]

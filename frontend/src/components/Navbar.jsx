@@ -1,9 +1,18 @@
+// src/components/Navbar.jsx
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const username = localStorage.getItem("username");
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    navigate("/login");
+  };
 
   const navItems = [
     { label: "Problems", path: "/problems" },
@@ -14,7 +23,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-gradient-to-r from-blue-700 to-purple-700 text-white shadow-md px-6 md:px-12 py-4 flex items-center justify-between">
-      <div className="flex items-center space-x-2 text-white">
+      <div className="flex items-center space-x-2">
         <div className="bg-white text-blue-700 rounded-full p-1 text-xl font-extrabold">
           C
         </div>
@@ -34,19 +43,34 @@ const Navbar = () => {
             {item.label}
           </Link>
         ))}
-        <Link
-          to="/login"
-          className="bg-white text-blue-700 font-semibold px-4 py-2 rounded-md hover:shadow-md transition duration-300"
-        >
-          Sign in
-        </Link>
+
+        {username ? (
+          <>
+            <Link to="/" className="px-3 py-2 hover:underline">
+              Hello, {username}
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 hover:bg-red-600 px-3 py-2 rounded-md"
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <Link
+            to="/login"
+            className="bg-white text-blue-700 font-semibold px-4 py-2 rounded-md hover:shadow-md transition duration-300"
+          >
+            Sign in
+          </Link>
+        )}
       </div>
 
       {/* Mobile Hamburger */}
       <div className="md:hidden">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="focus:outline-none text-white"
+          className="focus:outline-none"
         >
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
@@ -64,12 +88,27 @@ const Navbar = () => {
               {item.label}
             </Link>
           ))}
-          <Link
-            to="/login"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-center px-4 py-2 rounded-md"
-          >
-            Sign in
-          </Link>
+
+          {username ? (
+            <>
+              <Link to="/" className="hover:underline">
+                Hello, {username}
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/login"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-center px-4 py-2 rounded-md"
+            >
+              Sign in
+            </Link>
+          )}
         </div>
       )}
     </nav>
