@@ -1,120 +1,84 @@
 import { dir } from "tmp-promise";
 import fs from "fs-extra";
-import { v4 as uuidv4 } from "uuid";
-import { spawn } from "child_process";
 import path from "path";
+import { spawn } from "child_process";
 
-/**
- * Writes user code to a temp file, compiles (with a longer timeout),
- * runs it (with the problem’s timeout), and returns { output } or { error }.
- */
 export async function runUserCode({ code, language, input, timeLimitMs }) {
-  const { path: workDir, cleanup } = await dir({ unsafeCleanup: true });
+  if (!["java", "cpp", "python"].includes(language)) {
+    return { error: `Language '${language}' not supported` };
+  }
+
+  const tempBase = "/tmp/oj-tmp";
+  await fs.ensureDir(tempBase);
+
+  // tmp-promise dir must be relative to /tmp, so pass absolute path under /tmp
+  const { path: workDir, cleanup } = await dir({
+    dir: tempBase,
+    unsafeCleanup: true,
+  });
 
   try {
-    let srcFile, compileCmd, compileArgs, runCmd, runArgs, execCwd;
+    const ext =
+      language === "java" ? "java" : language === "cpp" ? "cpp" : "py";
+    const fname = `Main_${Date.now()}.${ext}`;
+    const filePath = path.join(workDir, fname);
 
-    if (language === "cpp") {
-      const id = uuidv4();
-      srcFile = path.join(workDir, `Main_${id}.cpp`);
-      const binFile = path.join(workDir, `Main_${id}.out`);
-      await fs.writeFile(srcFile, code, "utf8");
+    await fs.writeFile(filePath, code, "utf8");
 
-      compileCmd = "g++";
-      compileArgs = [srcFile, "-O2", "-std=c++17", "-o", binFile];
-      runCmd = binFile;
-      runArgs = [];
-    } else if (language === "java") {
-      srcFile = path.join(workDir, "Main.java");
-      await fs.writeFile(srcFile, code, "utf8");
+    console.log(`[codeExecutor] Writing code to: ${filePath}`);
+    console.log(`[codeExecutor] Files in workDir:`, await fs.readdir(workDir));
 
-      compileCmd = "javac";
-      compileArgs = ["Main.java"];
-      runCmd = "java";
-      runArgs = ["Main"];
-      execCwd = workDir;
-    } else if (language === "python") {
-      srcFile = path.join(workDir, `script_${uuidv4()}.py`);
-      await fs.writeFile(srcFile, code, "utf8");
+    const args = [
+      "run",
+      "--rm",
+      "-i",
+      "-v",
+      `${workDir}:/sandbox:rw`,
+      "oj-judge:latest",
+      language,
+      `${timeLimitMs}`,
+    ];
 
-      compileCmd = null;
-      runCmd = "python3";
-      runArgs = [srcFile];
-    } else {
-      return { error: "Unsupported language" };
-    }
+    console.log(
+      "[codeExecutor] Running docker:",
+      ["docker", ...args].join(" ")
+    );
 
-    // 1) Compile with a 5-second timeout
-    if (compileCmd) {
-      try {
-        await execCommand(compileCmd, compileArgs, 5000, "", execCwd);
-      } catch (err) {
-        return { error: `Compilation Error:\n${err.message}` };
-      }
-    }
+    const child = spawn("docker", args, { stdio: ["pipe", "pipe", "pipe"] });
 
-    // 2) Run with the problem’s time limit
-    try {
-      const output = await execCommand(
-        runCmd,
-        runArgs,
-        timeLimitMs,
-        input,
-        execCwd
-      );
-      return { output };
-    } catch (err) {
-      if (err.message.includes("Time Limit Exceeded")) {
-        return { error: "Time Limit Exceeded" };
-      }
-      return { error: `Runtime Error:\n${err.message}` };
-    }
-  } catch (err) {
-    return { error: `Internal Error:\n${err.message}` };
-  } finally {
-    // swallow cleanup errors (EBUSY on Windows)
-    try {
-      await cleanup();
-    } catch {
-      /* ignore */
-    }
-  }
-}
-
-/**
- * Spawn a process, feed stdinData, enforce timeout.
- * Resolves with stdout or rejects with an Error.
- */
-function execCommand(cmd, args = [], timeoutMs, stdinData = "", cwd) {
-  return new Promise((resolve, reject) => {
-    const opts = { stdio: ["pipe", "pipe", "pipe"] };
-    if (cwd) opts.cwd = cwd;
-
-    let child;
-    try {
-      child = spawn(cmd, args, opts);
-    } catch (err) {
-      return reject(new Error(`Failed to launch '${cmd}': ${err.message}`));
-    }
+    if (input) child.stdin.write(input.endsWith("\n") ? input : input + "\n");
+    child.stdin.end();
 
     let stdout = "",
       stderr = "";
-    const timer = setTimeout(() => {
-      child.kill("SIGKILL");
-      reject(new Error("Time Limit Exceeded"));
-    }, timeoutMs);
 
-    if (stdinData) child.stdin.write(stdinData);
-    child.stdin.end();
-
-    child.stdout.on("data", (d) => (stdout += d));
-    child.stderr.on("data", (d) => (stderr += d));
-
-    child.on("exit", (code, signal) => {
-      clearTimeout(timer);
-      if (signal === "SIGKILL") return reject(new Error("Time Limit Exceeded"));
-      if (code !== 0) return reject(new Error(stderr || `Exited ${code}`));
-      resolve(stdout);
+    child.stdout.on("data", (chunk) => {
+      stdout += chunk.toString();
     });
-  });
+
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk.toString();
+      console.error(`[codeExecutor][stderr] ${chunk.toString()}`);
+    });
+
+    const exitCode = await new Promise((resolve, reject) => {
+      child.on("exit", resolve);
+      child.on("error", reject);
+    });
+
+    console.log(`[codeExecutor] Docker exited with code ${exitCode}`);
+
+    if (exitCode === 137) return { error: "Time Limit Exceeded" };
+    if (exitCode !== 0)
+      return { error: stderr.trim() || `Exited with code ${exitCode}` };
+
+    return { output: stdout.replace(/\r/g, "").trimEnd() + "\n" };
+  } catch (err) {
+    console.error("[codeExecutor] Internal Error:", err);
+    return { error: `Internal Error: ${err.message}` };
+  } finally {
+    try {
+      await cleanup();
+    } catch (_) {}
+  }
 }

@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  oj-judge-builder:
+    build:
+      context: ./judge
+      dockerfile: Dockerfile
+    image: oj-judge:latest
+    entrypoint: ["true"]
+
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: oj-backend:latest
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - oj-judge-builder
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./server:/app
+      - server_node_modules:/app/node_modules
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/oj-tmp:/tmp/oj-tmp # Important: Shared temp directory bind mount
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: oj-frontend:latest
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - "5173:5173"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - VITE_API_BASE_URL=http://server:5000
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+
+volumes:
+  mongo-data:
+  server_node_modules:
+  frontend_node_modules:
