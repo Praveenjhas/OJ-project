@@ -48,6 +48,7 @@ export default function ProblemDetail() {
   const handleSubmit = async () => {
     if (!userId) return alert("Please log in to submit.");
     setSubmitting(true);
+    setResults([]);
     try {
       const submission = await submitSolution({
         problem: id,
@@ -64,12 +65,14 @@ export default function ProblemDetail() {
           submittedAt: submission.submittedAt,
           language: lang,
           code,
+          testCaseResults: submission.testCaseResults || [],
+          errorMessage: submission.errorMessage || null,
         },
         ...prev,
       ]);
       setResults(submission.testCaseResults || []);
       if (submission.verdict === "Accepted") setSolved(true);
-      setTab(TABS[1]); // switch to submissions tab
+      setTab(TABS[1]); // Switch to submissions tab to view results
     } catch (e) {
       console.error(e);
       alert("Submission failed.");
@@ -116,10 +119,10 @@ export default function ProblemDetail() {
             <strong>Categories:</strong> {problem.categories.join(", ")}
           </div>
           <div>
-            <strong>Time:</strong> {problem.timeLimit} ms
+            <strong>Time Limit:</strong> {problem.timeLimit} ms
           </div>
           <div>
-            <strong>Memory:</strong> {problem.memoryLimit} MB
+            <strong>Memory Limit:</strong> {problem.memoryLimit} MB
           </div>
         </div>
         {/* Description */}
@@ -215,6 +218,59 @@ export default function ProblemDetail() {
         {tab === "My Submissions" && (
           <div className="flex-1 overflow-auto">
             <SubmissionTable submissions={subs} />
+            {/* Optionally show test case detailed results for last submission */}
+            {results.length > 0 && (
+              <>
+                <h3 className="mt-6 mb-2 font-semibold">Test Case Results</h3>
+                <div className="overflow-auto max-h-80 border rounded shadow bg-white p-4">
+                  {results.map((tc, idx) => (
+                    <div
+                      key={idx}
+                      className={`mb-4 p-3 rounded border ${
+                        tc.passed
+                          ? "border-green-300 bg-green-50"
+                          : "border-red-300 bg-red-50"
+                      }`}
+                    >
+                      <p>
+                        <strong>Test Case {idx + 1}:</strong>{" "}
+                        {tc.passed ? (
+                          <span className="text-green-600">Passed</span>
+                        ) : (
+                          <span className="text-red-600">Failed</span>
+                        )}
+                      </p>
+                      <p>
+                        <strong>Input:</strong>
+                      </p>
+                      <pre className="whitespace-pre-wrap">{tc.input}</pre>
+                      <p>
+                        <strong>Expected Output:</strong>
+                      </p>
+                      <pre className="whitespace-pre-wrap">
+                        {tc.expectedOutput}
+                      </pre>
+                      <p>
+                        <strong>Your Output:</strong>
+                      </p>
+                      <pre className="whitespace-pre-wrap">
+                        {tc.userOutput || "No Output"}
+                      </pre>
+                      {tc.error && (
+                        <>
+                          <p>
+                            <strong>Error:</strong>
+                          </p>
+                          <pre className="whitespace-pre-wrap text-red-600">
+                            {tc.error}
+                          </pre>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         )}
       </main>

@@ -1,8 +1,8 @@
 FROM openjdk:17-jdk-slim
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends bash coreutils g++ python3 bc \
- && rm -rf /var/lib/apt/lists/*
+  && apt-get install -y --no-install-recommends bash coreutils g++ python3 bc libstdc++6 jq time \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /sandbox
 

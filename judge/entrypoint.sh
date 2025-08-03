@@ -1,76 +1,85 @@
 #!/usr/bin/env bash
+# entrypoint.sh
+
 LANG="${1,,}"
 TIMEOUT_MS="$2"
 cd /sandbox || exit 1
 
-# Wait up to 5 seconds for the code file to appear
+# Wait for code file
 for i in {1..5}; do
   sleep 1
-  echo "DEBUG: Attempt $i - Contents of /sandbox:" >&2
-  ls -l >&2
-  if [ -n "$(ls Main_*.* 2>/dev/null)" ]; then
-    break
-  fi
-  if [ "$i" -eq 5 ]; then
-    echo "ERROR: No code file found after 5 attempts." >&2
-    exit 1
-  fi
+  if ls Main_*.* &>/dev/null; then break; fi
 done
 
-# Validate time limit
+# Validate timeout
 if ! [[ "$TIMEOUT_MS" =~ ^[0-9]+$ ]]; then
-  echo "ERROR: Invalid time limit: '$TIMEOUT_MS'" >&2
+  echo '{"verdict":"Error","output":"","error":"Invalid timeout","executionTime":0,"memoryUsed":0}'
   exit 1
 fi
-TIMEOUT_S=$(echo "scale=3; $TIMEOUT_MS / 1000" | bc)
+TIMEOUT_S=$(bc -l <<<"$TIMEOUT_MS/1000")
 
+# Helper: runs command under GNU time, captures stdout/stderr
+run_and_time() {
+  timeout "${TIMEOUT_S}s" \
+    /usr/bin/time -f "%e %M %x" -o __meta.txt \
+    bash -c "$@" > __out.txt 2>&1
+}
+
+# Compile / run
 case "$LANG" in
   java)
-    # Java branch
-    JAVA_FILE=$(ls Main_*.java 2>/dev/null)
-    mv "$JAVA_FILE" Main.java
-    javac Main.java 2>&1 | tee /dev/stderr
+    mv Main_*.java Main.java
+    javac Main.java 2> compile.err
     if [ $? -ne 0 ]; then
-      echo "ERROR: Java compilation failed" >&2
-      exit 1
+      err=$(sed 's/"/\\"/g' compile.err)
+      echo "{\"verdict\":\"Compilation Error\",\"output\":\"\",\"error\":\"$err\",\"executionTime\":0,\"memoryUsed\":0}"
+      exit 0
     fi
-    timeout --preserve-status --signal=KILL "${TIMEOUT_S}s" java Main 2>&1 | tee /dev/stderr
+    run_and_time "java -cp . Main"
     ;;
-
   cpp|c)
-    # C/C++ branch
-    echo "DEBUG: Compiling C++ code" >&2
-    CPP_FILE=$(ls Main_*.cpp 2>/dev/null)
-    mv "$CPP_FILE" Main.cpp
-    g++ Main.cpp -o main 2>&1 | tee /dev/stderr
-    if [ $? -ne 0 ]; then
-      echo "ERROR: C++ compilation failed" >&2
-      exit 1
-    fi
+  echo "DEBUG: Compiling C++ code" >&2
+  CPP_FILE=$(ls Main_*.cpp 2>/dev/null)
+  mv "$CPP_FILE" Main.cpp
+  g++ Main.cpp -o main 2> compile.err
+  if [ $? -ne 0 ]; then
+    err=$(sed 's/"/\\"/g' compile.err)
+    echo "{\"verdict\":\"Compilation Error\",\"output\":\"\",\"error\":\"$err\",\"executionTime\":0,\"memoryUsed\":0}"
+    exit 0
+  fi
 
-    # Copy binary into container’s own writable exec-enabled fs
-    cp ./main /tmp/main
-    chmod +x /tmp/main
+  cp ./main /tmp/main
+  chmod +x /tmp/main
 
-    echo "DEBUG: Executing /tmp/main" >&2
-    timeout --preserve-status --signal=KILL "${TIMEOUT_S}s" /tmp/main 2>&1 | tee /dev/stderr
-    ;;
-
+  echo "DEBUG: Executing /tmp/main with run_and_time" >&2
+  run_and_time "/tmp/main"
+  ;;
   python)
-    # Python branch
-    PY_FILE=$(ls Main_*.py 2>/dev/null)
-    mv "$PY_FILE" Main.py
-    timeout --preserve-status --signal=KILL "${TIMEOUT_S}s" python3 Main.py 2>&1 | tee /dev/stderr
+    mv Main_*.py Main.py
+    run_and_time "python3 Main.py"
     ;;
-
   *)
-    echo "Unsupported language: $LANG" >&2
-    exit 1
+    echo '{"verdict":"Error","output":"","error":"Unsupported language","executionTime":0,"memoryUsed":0}'
+    exit 0
     ;;
 esac
 
-EXIT_CODE=$?
-if [ $EXIT_CODE -ne 0 ]; then
-  echo "DEBUG: Command exited with code $EXIT_CODE" >&2
-fi
-exit $EXIT_CODE
+# Read resource usage
+read time mem exit_code < __meta.txt
+
+# Read program output
+# Escape quotes and backslashes for JSON
+out=$(sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' __out.txt)
+
+# Determine final verdict
+if   [ "$exit_code" -eq 124 ]; then verdict="Time Limit Exceeded"
+elif [ "$exit_code" -ne 0 ];   then verdict="Runtime Error"
+else verdict="Accepted"; fi
+
+# Emit one clean JSON
+echo -n "{\"verdict\":\"$verdict\","
+echo -n "\"output\":\"$out\","
+echo -n "\"error\":\"\","
+echo -n "\"executionTime\":$time,"
+echo    "\"memoryUsed\":$mem}"
+exit 0
