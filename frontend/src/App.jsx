@@ -4,7 +4,8 @@ import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import ProblemsPage from "./pages/ProblemsPage.jsx";
 import ProblemDetail from "./pages/ProblemDetail.jsx";
-
+import DiscussionPage from "./pages/DiscussionPage.jsx";
+import BlogDetailPage from "./pages/BlogDetailPage.jsx";
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("token");
   return token ? children : <Navigate to="/login" />;
@@ -33,6 +34,8 @@ export default function App() {
             </PrivateRoute>
           }
         />
+        <Route path="/discussions" element={<DiscussionPage />} />
+        <Route path="/discussions/:id" element={<BlogDetailPage />} />
       </Routes>
     </BrowserRouter>
   );

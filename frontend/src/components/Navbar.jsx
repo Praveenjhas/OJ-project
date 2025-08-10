@@ -16,7 +16,7 @@ const Navbar = () => {
 
   const navItems = [
     { label: "Problems", path: "/problems" },
-    { label: "Discussion", path: "/discussion" },
+    { label: "Discussion", path: "/discussions" },
     { label: "Ranks", path: "/ranks" },
     { label: "Contests", path: "/contests" },
   ];
