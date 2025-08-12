@@ -35,6 +35,70 @@ function normalizeAndCompare(uOut, eOut) {
   return u.every((line, i) => line === e[i]);
 }
 
+// Map raw runner verdicts / signals / stats into canonical verdict strings.
+// Minimal, defensive mapping so noisy runner outputs don't break judge logic.
+function mapRunnerVerdict(runnerResult, memoryLimitMb) {
+  const rawVerdict = (runnerResult?.verdict || "").toString().trim();
+  const exitCode = Number(runnerResult?.exitCode ?? NaN);
+  const maxMemKB = Number(runnerResult?.resourceStats?.maxMemoryKB ?? NaN);
+
+  // gather outputs to search for textual indicators (lowercased)
+  const stdout = (runnerResult?.output || "").toString().toLowerCase();
+  const rawStdout = (runnerResult?.rawDockerStdout || "").toString().toLowerCase();
+  const rawStderr = (runnerResult?.rawDockerStderr || "").toString().toLowerCase();
+  const errMsg = (runnerResult?.error || "").toString().toLowerCase();
+
+  // Normalize common textual variants
+  const normalized = rawVerdict.replace(/\.+$/, "").toLowerCase();
+
+  // Direct mappings
+  if (normalized === "accepted") return "Accepted";
+  if (normalized.includes("time limit")) return "Time Limit Exceeded";
+  if (normalized.includes("memory limit")) return "Memory Limit Exceeded";
+  if (normalized.includes("compilation")) return "Compilation Error";
+  if (normalized.includes("command not")) return "Runtime Error";
+  if (normalized.includes("execution failed")) return "Runtime Error";
+  if (normalized === "error") return "Error";
+
+  // Heuristics: check textual indicators across stdout/stderr/raw fields
+  const combinedText = `${stdout}\n${rawStdout}\n${rawStderr}\n${errMsg}`;
+
+  // detect C++ new throwing bad_alloc, or similar messages
+  if (/\b(bad_alloc|bad alloc|std::bad_alloc)\b/i.test(combinedText)) {
+    return "Memory Limit Exceeded";
+  }
+
+  // java OOM detection (keeps your earlier checks)
+  if (combinedText.includes("outofmemory") || combinedText.includes("out of memory") || combinedText.includes("java.lang.outofmemoryerror")) {
+    return "Memory Limit Exceeded";
+  }
+
+  // 'killed' or 'oom' in stderr is a good signal
+  if (combinedText.includes("killed") || combinedText.includes("oom")) {
+    return "Memory Limit Exceeded";
+  }
+
+  // exit code 137 => SIGKILL (often OOM / forced kill)
+  if (exitCode === 137) return "Memory Limit Exceeded";
+
+  // If resource stats show peak RSS >= allowed memory => MLE
+  if (!Number.isNaN(maxMemKB) && !Number.isNaN(memoryLimitMb)) {
+    const allowedKB = memoryLimitMb * 1024;
+    if (maxMemKB >= allowedKB) return "Memory Limit Exceeded";
+  }
+
+  // Fallback: if runner returned non-zero but none of the above matched -> Runtime Error
+  if (!Number.isNaN(exitCode) && exitCode !== 0) return "Runtime Error";
+
+  // default: return the raw label capitalized-ish
+  if (rawVerdict) {
+    return rawVerdict;
+  }
+
+  // ultimate fallback
+  return "Runtime Error";
+}
+
 export const submitSolution = async (req, res) => {
   try {
     const { problem: problemId, user, code, language } = req.body;
@@ -54,6 +118,11 @@ export const submitSolution = async (req, res) => {
       return res.status(404).json({ error: "Problem not found" });
     }
 
+    // Use problem memory limit if present; otherwise fallback to defaults.
+    const memoryLimitMb =
+      Number(problem.memoryLimitMb ?? problem.memoryLimit ?? problem.memoryLimitMB) ||
+      512;
+
     const results = [];
     let verdict = "Accepted";
 
@@ -63,19 +132,24 @@ export const submitSolution = async (req, res) => {
         language: lang,
         input: tc.input,
         timeLimitMs: problem.timeLimit,
+        memoryLimitMb, // <-- pass memory limit into executor
       });
 
       // extract resource stats
       const secs = r.resourceStats?.userTimeSec ?? 0; // seconds
       const kb = r.resourceStats?.maxMemoryKB ?? 0; // KB
 
+      // map runner verdict into canonical verdict
+      const mappedVerdict = mapRunnerVerdict(r, memoryLimitMb);
+
       // decide pass/fail
       let passed = false;
-      if (r.verdict === "Accepted") {
+      if (mappedVerdict === "Accepted") {
         passed = normalizeAndCompare(r.output, tc.expectedOutput);
         if (!passed) verdict = "Wrong Answer";
       } else {
-        verdict = r.verdict;
+        // any non-Accepted mapped verdict sets the overall verdict (compilation, mle, tle, runtime, etc.)
+        verdict = mappedVerdict;
       }
 
       results.push({
@@ -84,10 +158,10 @@ export const submitSolution = async (req, res) => {
         userOutput: r.output || "",
         passed,
         error: r.error || null,
-        verdict: r.verdict,
+        verdict: mappedVerdict,
         // store per-test resource usage too if you like:
-        executionTime: secs * 1000, // ms
-        memoryUsed: kb / 1024, // MB
+        executionTime: secs != null ? secs * 1000 : null, // ms
+        memoryUsed: kb != null && !Number.isNaN(kb) ? kb / 1024 : null, // MB
       });
 
       if (verdict !== "Accepted") break;
