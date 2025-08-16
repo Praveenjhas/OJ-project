@@ -25,8 +25,10 @@ case $LANGUAGE in
     fi
     # Run the program in a child bash that sets ulimit only for that child,
     # then exec the binary so the limit applies only to the process tree below.
+    mv main /tmp/main
+    chmod +x /tmp/main
     timeout "${TIME_LIMIT_SEC}s" /usr/bin/time -f "%e %M " -o __meta.txt \
-      bash -lc "ulimit -v $((MEMORY_LIMIT_MB*1024)) && exec ./main" >__out.txt 2>&1
+      bash -lc "ulimit -v $((MEMORY_LIMIT_MB*1024)) && exec /tmp/main" >__out.txt 2>&1
     exit_code=$?
     ;;
   java)
@@ -37,6 +39,7 @@ case $LANGUAGE in
       echo -n "Compilation Failed.\n"
       exit 1
     fi
+    mv Main.class /tmp/Main.class
     timeout "${TIME_LIMIT_SEC}s" /usr/bin/time -f "%e %M " -o __meta.txt \
       bash -lc "ulimit -v $((MEMORY_LIMIT_MB*1024)) && exec java -cp . Main" >__out.txt 2>&1
     exit_code=$?
