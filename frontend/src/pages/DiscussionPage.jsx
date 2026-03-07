@@ -1,29 +1,39 @@
 // src/pages/DiscussionPage.jsx
-import React, { useEffect, useState, useMemo } from "react";
-import { fetchPublicBlogs } from "../services/blogService";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  createBlog,
+  fetchPublicBlogs,
+  fetchBlogById,
+} from "../services/blogService";
 import BlogList from "../components/BlogList";
 import BlogDetail from "../components/BlogDetail";
 import Spinner from "../components/Spinner";
 
-/**
- * Modern, simple, and "dashing" Discussions page.
- * - No external libs
- * - Client-side search (simple & responsive)
- * - Sort (popular/new)
- * - Sticky left column with nice cards
- */
+function toSafeHtml(text) {
+  const escaped = String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  return escaped.replace(/\n/g, "<br/>");
+}
 
 export default function DiscussionPage() {
   const [blogs, setBlogs] = useState([]);
-  const [selected, setSelected] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const [sort, setSort] = useState("popular"); // "popular" | "new"
+  const [creating, setCreating] = useState(false);
+  const [sort, setSort] = useState("popular");
   const [search, setSearch] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [composer, setComposer] = useState({ title: "", content: "" });
 
-  // Load posts from server when component mounts or sort changes
+  const token = localStorage.getItem("token");
+  const username = localStorage.getItem("username") || "Guest";
+
   useEffect(() => {
     let cancelled = false;
+
     async function load() {
       setLoading(true);
       try {
@@ -31,183 +41,251 @@ export default function DiscussionPage() {
           sort: sort === "new" ? "new" : "popular",
           limit: 50,
         });
+
         if (!cancelled) {
-          setBlogs(list || []);
-          // choose a sensible default selection
-          if (list && list.length > 0) {
-            setSelected((prev) => {
-              if (!prev) return list[0];
-              const found = list.find((b) => b._id === prev._id);
-              return found ?? list[0];
-            });
-          } else {
-            setSelected(null);
-          }
+          const safeList = list || [];
+          setBlogs(safeList);
+          setSelectedId((prev) => {
+            if (!safeList.length) return null;
+            if (!prev) return safeList[0]._id;
+            const exists = safeList.some((b) => b._id === prev);
+            return exists ? prev : safeList[0]._id;
+          });
         }
       } catch (err) {
         console.error("Failed to fetch discussions:", err);
         if (!cancelled) {
           setBlogs([]);
-          setSelected(null);
+          setSelectedId(null);
         }
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
+
     load();
     return () => {
       cancelled = true;
     };
-  }, [sort]);
+  }, [sort, refreshKey]);
 
-  // client-side filtered list (fast & avoids extra API calls)
-  const filtered = useMemo(() => {
+  const filteredBlogs = useMemo(() => {
     if (!search.trim()) return blogs;
     const q = search.trim().toLowerCase();
     return blogs.filter((b) => {
       const title = (b.title || "").toLowerCase();
       const author = String(b.authorId || "").toLowerCase();
-      const content = (b.content || "").toLowerCase();
-      return title.includes(q) || author.includes(q) || content.includes(q);
+      const authorName = (b.authorName || "").toLowerCase();
+      return title.includes(q) || author.includes(q) || authorName.includes(q);
     });
   }, [blogs, search]);
 
+  const selectedBlog = useMemo(
+    () => blogs.find((b) => b._id === selectedId) || null,
+    [blogs, selectedId],
+  );
+
+  const totalLikes = useMemo(
+    () => blogs.reduce((sum, b) => sum + (b.likesCount || 0), 0),
+    [blogs],
+  );
+
+  const activeToday = useMemo(() => {
+    const today = new Date().toDateString();
+    return blogs.filter(
+      (b) => new Date(b.createdAt).toDateString() === today,
+    ).length;
+  }, [blogs]);
+
+  async function submitPost(e) {
+    e.preventDefault();
+    if (!token) return;
+
+    const title = composer.title.trim();
+    const content = composer.content.trim();
+    if (!title || !content) return;
+
+    setCreating(true);
+    try {
+      const created = await createBlog({
+        title,
+        content: toSafeHtml(content),
+      });
+
+      setComposer({ title: "", content: "" });
+      setSort("new");
+      setRefreshKey((k) => k + 1);
+
+      if (created?.id) {
+        const fresh = await fetchBlogById(created.id);
+        setSelectedId(fresh?._id || created.id);
+      }
+    } catch (err) {
+      console.error("Failed to create post:", err);
+      alert("Unable to create post. Please try again.");
+    } finally {
+      setCreating(false);
+    }
+  }
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      {/* LEFT SIDEBAR */}
-      <aside className="col-span-1">
-        <div className="sticky top-20 space-y-4">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold leading-tight">Discussions</h2>
-              <p className="text-sm text-gray-500 mt-1">
-                Community posts, Q&A & announcements
-              </p>
-            </div>
+    <div className="min-h-screen bg-slate-100">
+      <div className="bg-gradient-to-r from-slate-900 via-blue-900 to-cyan-800">
+        <div className="mx-auto max-w-7xl px-4 py-8 text-white sm:px-6 lg:px-8">
+          <h1 className="text-3xl font-black tracking-tight sm:text-4xl">
+            Discuss
+          </h1>
+          <p className="mt-2 max-w-3xl text-sm text-blue-100 sm:text-base">
+            Share ideas, ask coding questions, and learn from the community.
+          </p>
+        </div>
+      </div>
 
-            <div>
-              <button
-                onClick={() =>
-                  setSort((s) => (s === "popular" ? "new" : "popular"))
-                }
-                className="px-3 py-2 bg-gradient-to-r from-indigo-600 to-blue-500 text-white rounded-lg text-sm shadow-sm hover:opacity-95"
-                title="Toggle sort (popular/new)"
-              >
-                {sort === "popular" ? "Popular" : "Newest"}
-              </button>
-            </div>
-          </div>
-
-          {/* Search */}
-          <div className="relative">
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search titles, authors, content..."
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-200"
-            />
-            {search && (
-              <button
-                onClick={() => setSearch("")}
-                className="absolute right-3 top-3 text-xs text-gray-500 bg-white px-2 py-1 rounded"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-
-          {/* Stats / quick info */}
-          <div className="flex items-center justify-between text-xs text-gray-500">
-            <div>{filtered.length} posts</div>
-            <div>
-              Showing{" "}
-              {blogs.length ? Math.min(filtered.length, blogs.length) : 0}{" "}
-              results
-            </div>
-          </div>
-
-          {/* List container */}
-          <div className="bg-white rounded-2xl shadow p-3 h-[70vh] overflow-auto">
-            {loading ? (
-              <div className="flex items-center justify-center h-full">
-                <Spinner />
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <aside className="lg:col-span-3">
+            <div className="sticky top-6 space-y-4">
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <h2 className="text-sm font-semibold text-slate-900">Community Pulse</h2>
+                <div className="mt-4 space-y-3 text-sm">
+                  <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+                    <span className="text-slate-500">Posts</span>
+                    <span className="font-semibold text-slate-900">{blogs.length}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+                    <span className="text-slate-500">Likes</span>
+                    <span className="font-semibold text-slate-900">{totalLikes}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+                    <span className="text-slate-500">Today</span>
+                    <span className="font-semibold text-slate-900">{activeToday}</span>
+                  </div>
+                </div>
               </div>
-            ) : filtered.length === 0 ? (
-              <div className="text-center text-gray-500 py-10">
-                No posts found
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <BlogList
-                  blogs={filtered}
-                  onSelect={(b) => setSelected(b)}
-                  selectedId={selected ? selected._id : null}
+
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <h2 className="text-sm font-semibold text-slate-900">Browse Feed</h2>
+                <div className="mt-3 flex gap-2">
+                  <button
+                    onClick={() => setSort("popular")}
+                    className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+                      sort === "popular"
+                        ? "bg-slate-900 text-white"
+                        : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                    }`}
+                  >
+                    Popular
+                  </button>
+                  <button
+                    onClick={() => setSort("new")}
+                    className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+                      sort === "new"
+                        ? "bg-slate-900 text-white"
+                        : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                    }`}
+                  >
+                    New
+                  </button>
+                </div>
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search title or author"
+                  className="mt-3 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 outline-none focus:border-blue-400"
                 />
               </div>
-            )}
-          </div>
+            </div>
+          </aside>
+
+          <main className="space-y-4 lg:col-span-5">
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="mb-3 flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold text-slate-900">Create a post</h2>
+                  <p className="text-xs text-slate-500">Post as @{username}</p>
+                </div>
+              </div>
+
+              {token ? (
+                <form onSubmit={submitPost} className="space-y-3">
+                  <input
+                    value={composer.title}
+                    onChange={(e) =>
+                      setComposer((s) => ({ ...s, title: e.target.value }))
+                    }
+                    placeholder="Give your post a clear title"
+                    className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400"
+                  />
+                  <textarea
+                    value={composer.content}
+                    onChange={(e) =>
+                      setComposer((s) => ({ ...s, content: e.target.value }))
+                    }
+                    placeholder="Share what you are building, ask for feedback, or start a coding thread..."
+                    rows={4}
+                    className="w-full resize-none rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-blue-400"
+                  />
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-slate-500">
+                      Keep it clear and useful for other developers.
+                    </span>
+                    <button
+                      type="submit"
+                      disabled={creating}
+                      className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+                    >
+                      {creating ? "Posting..." : "Share Post"}
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-3 text-sm text-blue-800">
+                  Please <Link to="/login" className="font-semibold underline">log in</Link> to create posts, like, and comment.
+                </div>
+              )}
+            </section>
+
+            <section className="space-y-3">
+              {loading ? (
+                <div className="flex min-h-40 items-center justify-center rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <Spinner />
+                </div>
+              ) : filteredBlogs.length === 0 ? (
+                <div className="rounded-2xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-500 shadow-sm">
+                  No discussions match your filters.
+                </div>
+              ) : (
+                <BlogList
+                  blogs={filteredBlogs}
+                  onSelect={(b) => setSelectedId(b._id)}
+                  selectedId={selectedId}
+                />
+              )}
+            </section>
+          </main>
+
+          <aside className="lg:col-span-4">
+            <div className="sticky top-6">
+              {selectedBlog ? (
+                <BlogDetail
+                  blogId={selectedBlog._id}
+                  onVoteChange={(updated) => {
+                    setBlogs((prev) =>
+                      prev.map((b) =>
+                        b._id === updated._id ? { ...b, ...updated } : b,
+                      ),
+                    );
+                  }}
+                />
+              ) : (
+                <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
+                  Select a post to open the full thread.
+                </div>
+              )}
+            </div>
+          </aside>
         </div>
-      </aside>
-
-      {/* RIGHT DETAIL */}
-      <main className="col-span-2">
-        {selected ? (
-          <div className="bg-white rounded-2xl shadow p-6">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h1 className="text-3xl font-extrabold text-gray-900">
-                  {selected.title}
-                </h1>
-                <div className="mt-2 text-sm text-gray-500">
-                  by{" "}
-                  <span className="font-medium text-gray-700">
-                    {String(selected.authorId).slice(-6)}
-                  </span>
-                  {" • "}
-                  <span>{new Date(selected.createdAt).toLocaleString()}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="px-3 py-1 rounded-md bg-green-50 text-green-700 border border-green-100">
-                  👍 {selected.likesCount ?? 0}
-                </div>
-                <div className="px-3 py-1 rounded-md bg-gray-50 text-gray-700 border border-gray-100">
-                  {selected.commentsCount ?? 0} comments
-                </div>
-              </div>
-            </div>
-
-            <div
-              className="mt-6 prose max-w-none text-gray-800"
-              dangerouslySetInnerHTML={{
-                __html: selected.content || "<i>No content</i>",
-              }}
-            />
-
-            <div className="mt-8 border-t pt-4">
-              {/* Reuse BlogDetail for comments/actions */}
-              <BlogDetail
-                blogId={selected._id}
-                onVoteChange={(updated) => {
-                  // reflect updated likes/comments in selected and list
-                  setSelected((s) => ({ ...s, ...updated }));
-                  setBlogs((prev) =>
-                    prev.map((b) =>
-                      b._id === updated._id ? { ...b, ...updated } : b
-                    )
-                  );
-                }}
-              />
-            </div>
-          </div>
-        ) : (
-          <div className="bg-white rounded-2xl shadow p-6 flex items-center justify-center text-gray-500">
-            Select a discussion to read — or refresh to load posts.
-          </div>
-        )}
-      </main>
+      </div>
     </div>
   );
 }

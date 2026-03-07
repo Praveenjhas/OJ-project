@@ -1,10 +1,7 @@
 // src/services/authService.js
 import axios from "axios";
-
 const BASE_URL = "http://localhost:5000/api/auth";
-
 const authAPI = axios.create({ baseURL: BASE_URL });
-
 /**
  * Registers a new user with username and password.
  * @param {{ username: string, password: string, email?: string }} data

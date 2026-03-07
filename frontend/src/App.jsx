@@ -6,6 +6,7 @@ import ProblemsPage from "./pages/ProblemsPage.jsx";
 import ProblemDetail from "./pages/ProblemDetail.jsx";
 import DiscussionPage from "./pages/DiscussionPage.jsx";
 import BlogDetailPage from "./pages/BlogDetailPage.jsx";
+import RanksPage from "./pages/RanksPage.jsx";
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("token");
   return token ? children : <Navigate to="/login" />;
@@ -36,6 +37,7 @@ export default function App() {
         />
         <Route path="/discussions" element={<DiscussionPage />} />
         <Route path="/discussions/:id" element={<BlogDetailPage />} />
+        <Route path="/ranks" element={<RanksPage />} />
       </Routes>
     </BrowserRouter>
   );

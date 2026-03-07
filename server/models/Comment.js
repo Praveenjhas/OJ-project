@@ -3,7 +3,7 @@ import { Schema, Types, model } from 'mongoose';
 const commentSchema = new Schema(
   {
     blogId: { type: Types.ObjectId, ref: 'Blog', index: true, required: true },
-    userId: { type: Types.ObjectId, required: true },
+    userId: { type: Types.ObjectId, ref: 'User', required: true },
     body: { type: String, required: true },
     parentId: { type: Types.ObjectId, default: null, index: true },
     ancestors: { type: [Types.ObjectId], default: [], index: true },

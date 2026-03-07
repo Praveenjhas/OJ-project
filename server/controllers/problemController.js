@@ -19,7 +19,7 @@ export const getAllProblems = async (req, res) => {
     }
 
     const problems = await Problem.find(filter).select(
-      "_id title difficulty categories solvedCount"
+      "_id title difficulty categories solvedCount",
     );
 
     const solvedMap = {};
@@ -64,7 +64,7 @@ export const getProblemById = async (req, res) => {
     // Fetch full problem document
     const problem = await Problem.findById(id).populate(
       "createdBy",
-      "username"
+      "username",
     );
 
     if (!problem) {

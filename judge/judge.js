@@ -1,6 +1,6 @@
 // judge/judge.js
 import express from "express";
-import { runUserCode } from "./executor";
+import { runUserCode } from "../server/utils/codeExecutor.js";
 const app = express();
 app.use(express.json());
 

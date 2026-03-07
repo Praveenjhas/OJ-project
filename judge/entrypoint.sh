@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # entrypoint.sh
 
-set -euo pipefail
+set -uo pipefail
 
 # parameters for execution
 LANGUAGE="$1"
@@ -10,6 +10,10 @@ MEMORY_LIMIT_MB="$3"
 
 # derived
 TIME_LIMIT_SEC=$(awk "BEGIN {print $TIME_LIMIT_MS/1000}")
+JAVA_HEAP_MB=$(( MEMORY_LIMIT_MB * 3 / 4 ))
+if [ "$JAVA_HEAP_MB" -lt 16 ]; then
+  JAVA_HEAP_MB=16
+fi
 
 # exit_code used to determine actual problem in handler
 exit_code=0
@@ -20,7 +24,6 @@ case $LANGUAGE in
     g++ Main.cpp -o main 2> compile.err
     compile_status=$?
     if [ $compile_status -ne 0 ]; then
-      echo -e "Compilation Failed.\n"
       exit 1
     fi
     # Run the program in a child bash that sets ulimit only for that child,
@@ -36,12 +39,12 @@ case $LANGUAGE in
     javac Main.java 2> compile.err
     compile_status=$?
     if [ $compile_status -ne 0 ]; then
-      echo -n "Compilation Failed.\n"
       exit 1
     fi
-    mv Main.class /tmp/Main.class
+    # JVM startup needs more virtual address space than strict ulimit allows.
+    # Limit Java heap explicitly and enforce memory via measured RSS below.
     timeout "${TIME_LIMIT_SEC}s" /usr/bin/time -f "%e %M " -o __meta.txt \
-      bash -lc "ulimit -v $((MEMORY_LIMIT_MB*1024)) && exec java -cp . Main" >__out.txt 2>&1
+      bash -lc "exec java -Xint -Xms16m -Xmx${JAVA_HEAP_MB}m -XX:+UseSerialGC -cp /sandbox Main" >__out.txt 2>&1
     exit_code=$?
     ;;
   python)
@@ -50,6 +53,10 @@ case $LANGUAGE in
     timeout "${TIME_LIMIT_SEC}s" /usr/bin/time -f "%e %M " -o __meta.txt \
       bash -lc "ulimit -v $((MEMORY_LIMIT_MB*1024)) && exec python3 Main.py" >__out.txt 2>&1
     exit_code=$?
+    ;;
+  *)
+    echo "Unsupported language: $LANGUAGE" > __out.txt
+    exit 127
     ;;
 esac
 
@@ -65,7 +72,10 @@ if [ -f __meta.txt ]; then
   # try verbose field first, then the simple "<elapsed> <maxrss>" fallback
   max_rss_kb=$(awk -F: '/Maximum resident set size/ { gsub(/[^0-9]/,"",$2); print int($2); exit }' __meta.txt || echo "")
   if [ -z "$max_rss_kb" ] || ! echo "$max_rss_kb" | grep -qE '^[0-9]+'; then
-    max_rss_kb=$(awk 'NF>=2{print int($2); exit} END{print 0}' __meta.txt 2>/dev/null || echo 0)
+    max_rss_kb=$(awk 'NF>=2{print int($2); exit}' __meta.txt 2>/dev/null || echo "")
+    if [ -z "$max_rss_kb" ] || ! echo "$max_rss_kb" | grep -qE '^[0-9]+'; then
+      max_rss_kb=0
+    fi
   fi
 fi
 

@@ -3,17 +3,17 @@ import { fetchComments } from "../services/blogService";
 import CommentForm from "./CommentForm";
 
 function CommentItem({ c, onReply }) {
+  const userLabel = c.userName || `user-${String(c.userId).slice(-6)}`;
   return (
-    <div className="mb-3">
-      <div className="text-sm text-gray-700">
-        <strong>{String(c.userId).slice(-6)}</strong> •{" "}
-        <span className="text-xs text-gray-400">
-          {new Date(c.createdAt).toLocaleString()}
-        </span>
+    <div className="rounded-xl border border-slate-200 bg-white p-3">
+      <div className="flex items-center gap-2 text-xs text-slate-500">
+        <strong className="text-slate-700">@{userLabel}</strong>
+        <span>|</span>
+        <span>{new Date(c.createdAt).toLocaleString()}</span>
       </div>
-      <div className="mt-1 text-gray-800">{c.body}</div>
-      <div className="mt-2 text-xs text-gray-500 flex items-center gap-3">
-        <button onClick={() => onReply(c._id)} className="hover:underline">
+      <div className="mt-2 whitespace-pre-wrap text-sm text-slate-800">{c.body}</div>
+      <div className="mt-2 flex items-center gap-3 text-xs text-slate-500">
+        <button onClick={() => onReply(c._id)} className="font-medium text-blue-700 hover:underline">
           Reply
         </button>
         <span>{c.repliesCount || 0} replies</span>
@@ -30,43 +30,48 @@ export default function CommentThread({ blogId }) {
   useEffect(() => {
     load();
   }, [blogId]);
+
   async function load() {
     setLoading(true);
     try {
       const list = await fetchComments(blogId);
-      setComments(list);
+      setComments(list || []);
     } catch (e) {
       console.error(e);
+      setComments([]);
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div>
+    <div className="space-y-3">
+      <CommentForm blogId={blogId} onPosted={load} />
+
       {loading ? (
-        <div className="text-gray-500">Loading comments…</div>
-      ) : (
-        <div className="space-y-4">
-          <CommentForm blogId={blogId} onPosted={load} />
-          {comments.map((c) => (
-            <div key={c._id} className="p-3 bg-white border rounded">
-              <CommentItem c={c} onReply={(id) => setReplyTo(id)} />
-              {replyTo === c._id && (
-                <div className="mt-2">
-                  <CommentForm
-                    blogId={blogId}
-                    parentId={c._id}
-                    onPosted={() => {
-                      setReplyTo(null);
-                      load();
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-          ))}
+        <div className="text-sm text-slate-500">Loading comments...</div>
+      ) : comments.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-3 py-4 text-sm text-slate-500">
+          No comments yet. Start the thread.
         </div>
+      ) : (
+        comments.map((c) => (
+          <div key={c._id} className="space-y-2">
+            <CommentItem c={c} onReply={(id) => setReplyTo(id)} />
+            {replyTo === c._id && (
+              <div className="ml-3 border-l border-slate-200 pl-3">
+                <CommentForm
+                  blogId={blogId}
+                  parentId={c._id}
+                  onPosted={() => {
+                    setReplyTo(null);
+                    load();
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        ))
       )}
     </div>
   );

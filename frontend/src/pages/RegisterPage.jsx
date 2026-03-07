@@ -20,7 +20,7 @@ export default function RegisterPage() {
 
     if (form.username.length < 3 || form.password.length < 4) {
       setError(
-        "Username and password must be at least 3 and 4 characters respectively."
+        "Username and password must be at least 3 and 4 characters respectively.",
       );
       setLoading(false);
       return;
@@ -30,7 +30,7 @@ export default function RegisterPage() {
       await registerUser(form);
       navigate("/login");
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
+      setError(err.message || "Registration failed");
     } finally {
       setLoading(false);
     }

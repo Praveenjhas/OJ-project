@@ -3,14 +3,42 @@ import { dir } from "tmp-promise";
 import fs from "fs-extra";
 import path from "path";
 import { spawn } from "child_process";
-import os from "os"; // <-- new import
+import os from "os";
 
-export async function runUserCode({ code, language, input, timeLimitMs, memoryLimitMb = 512 }) {
+function toDockerMountPath(hostPath) {
+  if (process.platform !== "win32") return hostPath;
+
+  // Convert "C:\\temp\\abc" -> "/c/temp/abc" for docker bind mount parsing.
+  const normalized = hostPath.replace(/\\/g, "/");
+  const m = normalized.match(/^([A-Za-z]):\/(.*)$/);
+  if (!m) return normalized;
+  return `/${m[1].toLowerCase()}/${m[2]}`;
+}
+
+function normalizeJavaCode(code) {
+  const normalized = code.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  const publicClass = normalized.match(/\bpublic\s+class\s+([A-Za-z_]\w*)/);
+  if (publicClass && publicClass[1] !== "Main") {
+    return normalized.replace(
+      /\bpublic\s+class\s+[A-Za-z_]\w*/,
+      "public class Main",
+    );
+  }
+  return normalized;
+}
+
+export async function runUserCode({
+  code,
+  language,
+  input,
+  timeLimitMs,
+  memoryLimitMb = 512,
+}) {
   if (!["java", "cpp", "python"].includes(language)) {
     return { verdict: "Error", error: `Unsupported language '${language}'` };
   }
 
-  const tempBase = "/tmp/oj-tmp";
+  const tempBase = path.join(os.tmpdir(), "oj-tmp");
   await fs.ensureDir(tempBase);
 
   const { path: workDir, cleanup } = await dir({
@@ -19,19 +47,24 @@ export async function runUserCode({ code, language, input, timeLimitMs, memoryLi
   });
 
   try {
-    const ext = language === "java" ? "java" : language === "cpp" ? "cpp" : "py";
+    const ext =
+      language === "java" ? "java" : language === "cpp" ? "cpp" : "py";
     const fname = `Main_${Date.now()}.${ext}`;
     const filePath = path.join(workDir, fname);
 
-    const normalizedCode = code.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+    const normalizedCode =
+      language === "java"
+        ? normalizeJavaCode(code)
+        : code.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
     await fs.writeFile(filePath, normalizedCode, "utf8");
+    const mountPath = toDockerMountPath(workDir);
 
     const args = [
       "run",
       "--rm",
       "-i",
       "-v",
-      `${workDir}:/sandbox:rw`,
+      `${mountPath}:/sandbox:rw`,
       "oj-judge:latest",
       language,
       `${timeLimitMs}`,
@@ -62,16 +95,18 @@ export async function runUserCode({ code, language, input, timeLimitMs, memoryLi
         // If killed by a signal (signal is a string like 'SIGKILL'), map to 128 + signum.
         if (signal) {
           // os.constants.signals maps names to numbers, e.g. { SIGKILL: 9, ... }
-          const signum = os.constants && os.constants.signals && os.constants.signals[signal]
-            ? os.constants.signals[signal]
-            : null;
+          const signum =
+            os.constants && os.constants.signals && os.constants.signals[signal]
+              ? os.constants.signals[signal]
+              : null;
 
           if (typeof signum === "number" && signum > 0) {
             return resolve(128 + signum); // e.g. SIGKILL -> 128 + 9 = 137
           }
 
           // fallback mapping for common signals if os.constants lookup fails
-          const fallback = { SIGKILL: 9, SIGTERM: 15, SIGINT: 2 }[signal] ?? null;
+          const fallback =
+            { SIGKILL: 9, SIGTERM: 15, SIGINT: 2 }[signal] ?? null;
           if (fallback) return resolve(128 + fallback);
 
           // ultimate fallback: return 1 (generic non-zero)
@@ -83,7 +118,6 @@ export async function runUserCode({ code, language, input, timeLimitMs, memoryLi
       });
       child.on("error", (err) => reject(err));
     });
-
 
     // Paths on the host (workDir) — these are created by entrypoint.sh
     const outPath = path.join(workDir, "__out.txt");
@@ -112,15 +146,18 @@ export async function runUserCode({ code, language, input, timeLimitMs, memoryLi
 
     // Read program output
     let programOutput = "";
-    try{
+    try {
       if (await fs.pathExists(outPath)) {
         programOutput = (await fs.readFile(outPath, "utf8")).trim();
       } else {
         // fallback: use docker stdout if file missing
         programOutput = dockerStdout.trim();
       }
-    }catch(e){
-      console.error("Meta parsing failed. Raw meta content:", await fs.readFile(metaPath, "utf8").catch(() => "<unreadable>"));
+    } catch (e) {
+      console.error(
+        "Meta parsing failed. Raw meta content:",
+        await fs.readFile(metaPath, "utf8").catch(() => "<unreadable>"),
+      );
       return {
         verdict: "Runtime Error",
         output: programOutput || "",
@@ -149,10 +186,12 @@ export async function runUserCode({ code, language, input, timeLimitMs, memoryLi
     // Map docker/timeout exit codes to verdicts (timeout uses 124)
     let verdict = "Accepted";
     if (exitCode === 124) verdict = "Time Limit Exceeded";
-    else if (exitCode === 125) verdict = "Execution Failed (timeout command error)";
+    else if (exitCode === 125)
+      verdict = "Execution Failed (timeout command error)";
     else if (exitCode === 126) verdict = "Command Not Executable";
     else if (exitCode === 127) verdict = "Command Not Found";
-    else if (exitCode === 137) verdict = "Memory Limit Exceeded"; // <-- removed trailing dot
+    else if (exitCode === 137)
+      verdict = "Memory Limit Exceeded"; // <-- removed trailing dot
     else if (exitCode !== 0) verdict = "Runtime Error";
     console.log(exitCode);
     return {
@@ -170,7 +209,7 @@ export async function runUserCode({ code, language, input, timeLimitMs, memoryLi
   } catch (err) {
     return {
       verdict: "Error",
-      error: err.message,
+      error: err.message || "Code execution failed",
       output: "",
     };
   } finally {

@@ -1,8 +1,8 @@
 // server/controllers/submissionController.js
-
 import mongoose from "mongoose";
 import Submission from "../models/Submission.js";
 import Problem from "../models/Problem.js";
+import User from "../models/User.js";
 import { runUserCode } from "../utils/codeExecutor.js";
 
 // map user input to our three supported langs
@@ -44,8 +44,12 @@ function mapRunnerVerdict(runnerResult, memoryLimitMb) {
 
   // gather outputs to search for textual indicators (lowercased)
   const stdout = (runnerResult?.output || "").toString().toLowerCase();
-  const rawStdout = (runnerResult?.rawDockerStdout || "").toString().toLowerCase();
-  const rawStderr = (runnerResult?.rawDockerStderr || "").toString().toLowerCase();
+  const rawStdout = (runnerResult?.rawDockerStdout || "")
+    .toString()
+    .toLowerCase();
+  const rawStderr = (runnerResult?.rawDockerStderr || "")
+    .toString()
+    .toLowerCase();
   const errMsg = (runnerResult?.error || "").toString().toLowerCase();
 
   // Normalize common textual variants
@@ -69,7 +73,11 @@ function mapRunnerVerdict(runnerResult, memoryLimitMb) {
   }
 
   // java OOM detection (keeps your earlier checks)
-  if (combinedText.includes("outofmemory") || combinedText.includes("out of memory") || combinedText.includes("java.lang.outofmemoryerror")) {
+  if (
+    combinedText.includes("outofmemory") ||
+    combinedText.includes("out of memory") ||
+    combinedText.includes("java.lang.outofmemoryerror")
+  ) {
     return "Memory Limit Exceeded";
   }
 
@@ -101,8 +109,13 @@ function mapRunnerVerdict(runnerResult, memoryLimitMb) {
 
 export const submitSolution = async (req, res) => {
   try {
-    const { problem: problemId, user, code, language } = req.body;
-    if (!user || !problemId || !code || !language) {
+    const userId = req.user?.id;
+    const { problem: problemId, code, language } = req.body;
+
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    if (!problemId || !code || !language) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
@@ -118,10 +131,10 @@ export const submitSolution = async (req, res) => {
       return res.status(404).json({ error: "Problem not found" });
     }
 
-    // Use problem memory limit if present; otherwise fallback to defaults.
     const memoryLimitMb =
-      Number(problem.memoryLimitMb ?? problem.memoryLimit ?? problem.memoryLimitMB) ||
-      512;
+      Number(
+        problem.memoryLimitMb ?? problem.memoryLimit ?? problem.memoryLimitMB,
+      ) || 512;
 
     const results = [];
     let verdict = "Accepted";
@@ -132,23 +145,18 @@ export const submitSolution = async (req, res) => {
         language: lang,
         input: tc.input,
         timeLimitMs: problem.timeLimit,
-        memoryLimitMb, // <-- pass memory limit into executor
+        memoryLimitMb,
       });
 
-      // extract resource stats
-      const secs = r.resourceStats?.userTimeSec ?? 0; // seconds
-      const kb = r.resourceStats?.maxMemoryKB ?? 0; // KB
-
-      // map runner verdict into canonical verdict
+      const secs = r.resourceStats?.userTimeSec ?? 0;
+      const kb = r.resourceStats?.maxMemoryKB ?? 0;
       const mappedVerdict = mapRunnerVerdict(r, memoryLimitMb);
 
-      // decide pass/fail
       let passed = false;
       if (mappedVerdict === "Accepted") {
         passed = normalizeAndCompare(r.output, tc.expectedOutput);
         if (!passed) verdict = "Wrong Answer";
       } else {
-        // any non-Accepted mapped verdict sets the overall verdict (compilation, mle, tle, runtime, etc.)
         verdict = mappedVerdict;
       }
 
@@ -159,29 +167,41 @@ export const submitSolution = async (req, res) => {
         passed,
         error: r.error || null,
         verdict: mappedVerdict,
-        // store per-test resource usage too if you like:
-        executionTime: secs != null ? secs * 1000 : null, // ms
-        memoryUsed: kb != null && !Number.isNaN(kb) ? kb / 1024 : null, // MB
+        executionTime: secs != null ? secs * 1000 : null,
+        memoryUsed: kb != null && !Number.isNaN(kb) ? kb / 1024 : null,
       });
 
       if (verdict !== "Accepted") break;
     }
 
-    // take last stats for the overall submission
     const last = results[results.length - 1] || {};
     const executionTime = last.executionTime ?? null;
     const memoryUsed = last.memoryUsed ?? null;
 
     const submission = await Submission.create({
       problem: problemId,
-      user,
+      user: userId, // use JWT user id
       code,
       language: lang,
       verdict,
-      executionTime, // now in ms
-      memoryUsed, // now in MB
+      executionTime,
+      memoryUsed,
       testCaseResults: results,
     });
+
+    // Realtime solved-tracking:
+    // If this submission is Accepted and this is user's first solve for this problem,
+    // add the problem to user's solved list and increment problem solvedCount once.
+    if (verdict === "Accepted") {
+      const solvedUpdate = await User.updateOne(
+        { _id: userId, solvedProblems: { $ne: problemId } },
+        { $addToSet: { solvedProblems: problemId } },
+      );
+
+      if ((solvedUpdate.modifiedCount || 0) > 0) {
+        await Problem.updateOne({ _id: problemId }, { $inc: { solvedCount: 1 } });
+      }
+    }
 
     return res.status(201).json({
       submissionId: submission._id,
@@ -192,17 +212,17 @@ export const submitSolution = async (req, res) => {
       submittedAt: submission.submittedAt,
     });
   } catch (err) {
-    console.error("🚨 submitSolution error:", err);
+    console.error("submitSolution error:", err);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 export const getSubmissionsByProblem = async (req, res) => {
   try {
-    const userId = req.user;
+    const userId = req.user?.id;
     const { problemId } = req.query;
 
-    if (!userId) {
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
     if (!problemId || !mongoose.Types.ObjectId.isValid(problemId)) {
@@ -217,13 +237,13 @@ export const getSubmissionsByProblem = async (req, res) => {
     })
       .sort({ submittedAt: -1 })
       .select(
-        "_id verdict executionTime memoryUsed submittedAt language code testCaseResults"
+        "_id verdict executionTime memoryUsed submittedAt language code testCaseResults",
       )
       .lean();
 
     return res.status(200).json({ success: true, submissions: subs });
   } catch (err) {
-    console.error("🔥 getSubmissionsByProblem error:", err);
+    console.error(" getSubmissionsByProblem error:", err);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error" });

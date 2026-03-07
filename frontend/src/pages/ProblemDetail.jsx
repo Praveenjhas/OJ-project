@@ -37,7 +37,6 @@ export default function ProblemDetail() {
         setSubs(history);
         setSolved(history.some((s) => s.verdict === "Accepted"));
       } catch (e) {
-        console.error(e);
         setError("Failed to load problem.");
       } finally {
         setLoading(false);
@@ -108,8 +107,8 @@ export default function ProblemDetail() {
                 problem.difficulty === "Easy"
                   ? "text-green-600"
                   : problem.difficulty === "Medium"
-                  ? "text-yellow-600"
-                  : "text-red-600"
+                    ? "text-yellow-600"
+                    : "text-red-600"
               }
             >
               {problem.difficulty}

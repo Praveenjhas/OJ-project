@@ -10,6 +10,11 @@ export async function fetchBlogById(id) {
   return res.data;
 }
 
+export async function createBlog(payload) {
+  const res = await api.post("/discussions", payload);
+  return res.data;
+}
+
 export async function fetchComments(blogId) {
   const res = await api.get(`/discussions/${blogId}/comments`);
   return res.data;
