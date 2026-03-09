@@ -2,10 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const stats = [
-  { label: "Problems", value: "250+" },
-  { label: "Daily Submissions", value: "10k+" },
-  { label: "Active Learners", value: "3k+" },
-  { label: "Discussion Threads", value: "500+" },
+  { label: "Problems", value: "20+" },
+  { label: "Daily Submissions", value: "10+" },
+  { label: "Active Learners", value: "10+" },
+  { label: "Discussion Threads", value: "5+" },
 ];
 
 const HeroSection = () => {
@@ -53,7 +53,9 @@ const HeroSection = () => {
                 key={item.label}
                 className="rounded-xl border border-slate-700 bg-slate-950 p-4"
               >
-                <p className="text-2xl font-extrabold text-white">{item.value}</p>
+                <p className="text-2xl font-extrabold text-white">
+                  {item.value}
+                </p>
                 <p className="mt-1 text-xs text-slate-400">{item.label}</p>
               </div>
             ))}
@@ -68,5 +70,4 @@ const HeroSection = () => {
     </section>
   );
 };
-
 export default HeroSection;
